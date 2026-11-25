@@ -1,0 +1,92 @@
+// Jobgrade AI proxy (Cloudflare Worker).
+// Holds the AI key as a secret, so it never reaches the browser.
+// Secrets/vars (set in Cloudflare dashboard → Worker → Settings → Variables and Secrets):
+//   AI_KEY   (Secret)  the Liara AI API key — pasted by Ali
+//   AI_URL   (Text)    OpenAI-compatible base URL, e.g. https://ai.liara.ir/api/<id>/v1
+//   AI_MODEL (Text)    model name, e.g. openai/gpt-4o-mini
+//   DAILY_LIMIT (Text) requests per user per day (default 10)
+// KV binding: LIMITS (for the per-user daily cap)
+
+const ORIGINS = ['https://visionopstech.github.io'];
+
+const TASKS = {
+  // email tool: work email that gets a reply; 3 versions as JSON
+  email: {
+    system: 'تو یک متخصص نوشتن ایمیل کاری هستی که ایمیل‌هات همیشه جواب می‌گیرن. از روی اطلاعات کاربر ۳ نسخه‌ی متفاوت ایمیل بنویس: نسخه‌ی ۱ «مستقیم» (درخواست همون اول)، نسخه‌ی ۲ «اول ارزش» (اول چیزی که به درد گیرنده می‌خوره، بعد درخواست)، نسخه‌ی ۳ «خیلی کوتاه» (حداکثر ۴ جمله). قواعد: موضوع ایمیل مشخص و کمتر از ۸ کلمه، بدون کلیک‌بیت. جمله‌ی اول درباره‌ی گیرنده یا دلیل واقعی تماس باشه، نه معرفی طولانی خودت. فقط یک درخواست روشن که جواب دادن بهش آسون باشه (مثلاً یه سؤال بله/نه یا دو گزینه‌ی زمان). بدنه کمتر از ۱۲۰ کلمه. بدون تعارف‌های کلیشه‌ای و اغراق. اگه اطلاعاتی نیست، از خودت عدد یا ادعا نساز و به‌جاش [جای خالی] بذار. زبان و لحن همونی باشه که کاربر خواسته؛ فارسی رو محترمانه و روان بنویس. برای هر نسخه ۲ دلیل خیلی کوتاه بنویس که چرا جواب می‌گیره (فارسی). فقط JSON معتبر برگردون با این شکل: {"versions":[{"name":"مستقیم","subject":"...","body":"...","why":["...","..."]}]}',
+    max: 1400,
+    temp: 0.7,
+    json: true,
+  },
+  // pricing tool step 2: split the job into sub-steps with realistic hours + flag vague deliverables
+  breakdown: {
+    system: 'تو یک مدیر پروژه‌ی باتجربه برای فریلنسرهای ایرانی هستی. کاری که کاربر می‌ده رو به ۴ تا ۶ مرحله‌ی واقعی بشکن و برای هر مرحله ساعت واقعی کار پیشنهاد بده (واقع‌بینانه، نه خوش‌بینانه). جلسه/هماهنگی و اصلاحات رو هم به‌عنوان مرحله‌ی جدا بیار. اسم هر مرحله کوتاه باشه (حداکثر ۵ کلمه، فارسی محاوره‌ای). بعد حداکثر ۲ چیز مبهم یا جاافتاده در «تحویلی» رو به شکل سؤال کوتاه از مشتری بنویس که قبل از قیمت دادن باید روشن بشه. فقط JSON معتبر برگردون، بدون هیچ متن دیگه، با این شکل: {"tasks":[{"t":"اسم مرحله","h":2}],"gaps":["سؤال ۱","سؤال ۲"]}',
+    max: 500,
+    temp: 0.3,
+    json: true,
+  },
+  // pricing tool: polish the client proposal text
+  polish: {
+    system: 'تو یک مشاور فروش برای فریلنسرهای ایرانی هستی. متن پیشنهاد قیمتی که کاربر می‌ده رو حرفه‌ای‌تر، محترمانه و قانع‌کننده بازنویسی کن. فارسی روان و محاوره‌ی مؤدبانه (نه خیلی رسمی). همه‌ی عددها، قیمت‌ها، تاریخ‌ها و شرایط رو دقیقاً همون‌طور نگه دار و چیزی اضافه نکن که در متن نیست. فقط متن نهایی رو برگردون، بدون توضیح.',
+    max: 900,
+  },
+  // pricing tool: short advice on how to defend the price
+  defend: {
+    system: 'تو یک مشاور فروش برای فریلنسرهای ایرانی هستی. بر اساس اطلاعات قیمت‌گذاری کاربر، ۳ جمله‌ی کوتاه و آماده بده که اگه مشتری گفت «گرونه» بتونه جواب بده، بدون تخفیف دادن. فارسی محاوره‌ی مؤدبانه. فقط ۳ مورد شماره‌دار.',
+    max: 500,
+  },
+};
+
+function cors(origin) {
+  const ok = ORIGINS.includes(origin);
+  return {
+    'Access-Control-Allow-Origin': ok ? origin : ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+}
+const json = (o, status, h) => new Response(JSON.stringify(o), { status, headers: { ...h, 'Content-Type': 'application/json; charset=utf-8' } });
+
+export default {
+  async fetch(req, env) {
+    const origin = req.headers.get('Origin') || '';
+    const h = cors(origin);
+    if (req.method === 'OPTIONS') return new Response(null, { headers: h });
+    if (req.method !== 'POST') return json({ error: 'POST only' }, 405, h);
+    if (!ORIGINS.includes(origin)) return json({ error: 'forbidden' }, 403, h);
+
+    let body;
+    try { body = await req.json(); } catch { return json({ error: 'bad json' }, 400, h); }
+    const task = TASKS[body.task];
+    const text = String(body.text || '').slice(0, 4000);
+    if (!task || !text.trim()) return json({ error: 'bad request' }, 400, h);
+
+    // daily cap per user (Telegram user id if sent, else IP)
+    const limit = parseInt(env.DAILY_LIMIT || '10', 10);
+    const who = String(body.uid || req.headers.get('CF-Connecting-IP') || 'anon').slice(0, 64);
+    const day = new Date().toISOString().slice(0, 10);
+    const key = `${day}:${who}`;
+    let used = 0;
+    if (env.LIMITS) {
+      used = parseInt((await env.LIMITS.get(key)) || '0', 10);
+      if (used >= limit) return json({ error: 'limit', message: 'سهم امروزت از AI تموم شد. فردا دوباره امتحان کن.' }, 429, h);
+    }
+
+    const r = await fetch(env.AI_URL.replace(/\/$/, '') + '/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + env.AI_KEY },
+      body: JSON.stringify({
+        model: env.AI_MODEL,
+        max_tokens: task.max,
+        temperature: task.temp ?? 0.6,
+        ...(task.json ? { response_format: { type: 'json_object' } } : {}),
+        messages: [{ role: 'system', content: task.system }, { role: 'user', content: text }],
+      }),
+    });
+    if (!r.ok) return json({ error: 'ai', status: r.status, detail: (await r.text()).slice(0, 300) }, 502, h);
+    const data = await r.json();
+    const out = data?.choices?.[0]?.message?.content?.trim() || '';
+    if (env.LIMITS) await env.LIMITS.put(key, String(used + 1), { expirationTtl: 60 * 60 * 26 });
+    return json({ text: out, left: Math.max(0, limit - used - 1) }, 200, h);
+  },
+};
