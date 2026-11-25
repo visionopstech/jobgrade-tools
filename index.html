@@ -46,15 +46,15 @@ body{background:var(--bg);color:var(--ink);font:15px/1.6 Est,Tahoma,"Segoe UI",s
 <main class="grid" id="grid"></main>
 <p class="foot">هر هفته ابزار جدید اضافه می‌شه · <a href="https://t.me/jobgrademe" id="ch">کانال جاب‌گرید</a></p>
 <script>
-var TOOLS=[{"num": "001", "slug": "pricing", "title": "دستیار قیمت‌گذاری", "desc": "ساعت کار و هزینه‌هات رو بده، ۳ گزینه‌ی قیمت و متن پیشنهاد آماده بگیر.", "emoji": "💰", "label": "ابزار ۰۰۱"}, {"num": "002", "slug": "portfolio", "title": "پروژه‌ی قبلیت، مشتری بعدیت", "desc": "از یه کار قبلیت، پست ۵ اسلایدی نمونه‌کار برای اینستاگرام بساز.", "emoji": "🗂️", "label": "ابزار ۰۰۲"}, {"num": "003", "slug": "followup", "title": "مشتری جواب نداد؟ نقشه‌ی پیگیری بگیر", "desc": "۳ پیام پیگیری با تاریخ، دلیل و یادآور تقویم.", "emoji": "📨", "label": "ابزار ۰۰۳"}, {"num": "004", "slug": "dayplan", "title": "روزت رو در ۳ دقیقه بچین", "desc": "برنامه‌ی روز با قانون ۷۰٪ و ساعت خاموشی، به‌همراه عکس والپیپر.", "emoji": "🗓️", "label": "ابزار ۰۰۴"}, {"num": "005", "slug": "intro", "title": "معرفی‌ای که یادشون بمونه", "desc": "معرفی ۳۰ ثانیه‌ای، جمله‌ی ۱۰ ثانیه‌ای و بیو، با ردیاب کلیشه و تایمر تمرین.", "emoji": "🎤", "label": "ابزار ۰۰۵"}, {"num": "006", "slug": "brief", "title": "بریف ضد دوباره‌کاری", "desc": "سؤال‌های درست بپرس، جواب‌های خطرناک مشتری رو پیدا کن و خلاصه‌ی توافق بفرست.", "emoji": "📝", "label": "ابزار ۰۰۶"}];
+var TOOLS=[{"num": "001", "slug": "pricing", "title": "دستیار قیمت‌گذاری", "desc": "ساعت کار و هزینه‌هات رو بده، ۳ گزینه‌ی قیمت و متن پیشنهاد آماده بگیر.", "emoji": "💰", "label": "ابزار ۰۰۱"}];
 var tg=window.Telegram&&Telegram.WebApp, inTg=!!(tg&&tg.initData);
 try{sessionStorage.setItem('jg_cat','1')}catch(e){}
 var sp=inTg&&tg.initDataUnsafe.start_param, q=new URLSearchParams(location.search).get('tool');
 var jump=TOOLS.find(function(t){return t.slug===(sp||q)});
-if(jump){location.replace('tools/'+jump.slug+'.html?v=11251131')}
+if(jump){location.replace('tools/'+jump.slug+'.html?v=11251133')}
 var g=document.getElementById('grid');
 TOOLS.forEach(function(t){
-  var a=document.createElement('a'); a.className='card'; a.href='tools/'+t.slug+'.html?v=11251131';
+  var a=document.createElement('a'); a.className='card'; a.href='tools/'+t.slug+'.html?v=11251133';
   a.innerHTML='<span class="emo">'+t.emoji+'</span><span class="lbl">'+t.label+'</span><span class="ttl"></span><span class="dsc"></span><span class="go">باز کن</span>';
   a.querySelector('.ttl').textContent=t.title; a.querySelector('.dsc').textContent=t.desc;
   if(inTg)a.addEventListener('click',function(){try{tg.HapticFeedback.impactOccurred('light')}catch(e){}});
