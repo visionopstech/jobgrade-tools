@@ -93,6 +93,55 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
 .calc td:last-child{text-align:left;white-space:nowrap}
 .calc{width:100%;border-collapse:collapse}
 </style>
+<style>
+.kinds{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.kinds button{font:inherit;font-size:14px;color:#fff;padding:9px 14px;border-radius:30px;background:var(--glass);border:1px solid var(--ln);cursor:pointer}
+.kinds button.on{background:var(--teal);color:#0b1424;font-weight:900;border-color:var(--teal)}
+.fld textarea{font:inherit;font-size:16px;color:#fff;background:var(--glass);border:1.5px solid var(--ln);border-radius:14px;padding:12px 14px;min-height:84px;width:100%;outline:none;resize:vertical;line-height:1.8}
+.fld textarea:focus{border-color:var(--teal)}
+.fld textarea::placeholder{color:#6f8399}
+.tasks{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:18px 0 0}
+.task{display:flex;align-items:center;gap:6px;background:var(--glass);border:1px solid var(--ln);border-radius:14px;padding:6px 8px 6px 6px}
+.task .tn{all:unset;flex:1;min-width:0;font-size:15px;color:#fff;padding:6px 4px}
+.task .th{all:unset;width:44px;text-align:center;font:900 18px Est,Tahoma;color:#fff}
+.task .tb{width:34px;height:34px;border-radius:50%;border:0;background:var(--glass2);color:#fff;font:900 18px/1 Est,Tahoma;cursor:pointer;flex:none}
+.task .tx{width:28px;height:28px;border:0;background:transparent;color:#7f93a8;font-size:16px;cursor:pointer;flex:none}
+.task small{font-size:11px;color:#7f93a8;margin-right:-2px}
+.addt{font:inherit;font-size:14px;color:var(--teal);background:transparent;border:1.5px dashed var(--ln);border-radius:14px;padding:10px;cursor:pointer;margin-top:8px;width:100%}
+.total{display:flex;justify-content:space-between;align-items:center;margin:14px 0 0;padding:12px 16px;border-radius:14px;background:rgba(63,193,203,.12);border:1px solid rgba(63,193,203,.35);font-size:15px}
+.total b{font-size:20px;color:#9fe6ec}
+.gaps{margin:12px 0 0;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.8;background:rgba(247,127,0,.12);color:#ffd2a1;border:1px solid rgba(247,127,0,.35)}
+.gaps b{display:block;margin-bottom:4px}
+.why{margin:16px 0 0;border-radius:16px;padding:14px 16px;background:var(--glass);font-size:14px;line-height:1.9;color:#d5e2ee}
+.why b{color:#fff}
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;margin:22px 0 0;font-size:15px}
+.flow span{background:var(--glass);border-radius:12px;padding:10px 12px;text-align:center;line-height:1.4}
+.flow span b{display:block;font-size:20px}
+.flow .ar{background:none;padding:0;color:var(--mute);font-size:20px}
+.link{all:unset;cursor:pointer;color:var(--teal);font-size:14px;text-decoration:underline;text-underline-offset:4px;margin:16px auto 0;display:block;text-align:center}
+.helper{margin:14px 0 0;background:var(--glass);border-radius:16px;padding:14px}
+.helper .fields{margin-top:6px}
+.okbtn{display:block;width:100%;margin:12px 0 0;font:inherit;font-weight:700;font-size:15px;color:#0b1424;background:var(--teal);border:0;border-radius:14px;padding:12px;cursor:pointer}
+.yn{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--glass);border:1px solid var(--ln);border-radius:16px;padding:10px 12px 10px 14px;margin-top:10px;font-size:14.5px;line-height:1.6}
+.yn .b{display:flex;gap:4px;flex:none;background:rgba(0,0,0,.2);border-radius:12px;padding:3px}
+.yn button{font:inherit;font-size:14px;color:#fff;background:transparent;border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+.yn button.on{background:#fff;color:#14233b;font-weight:900}
+.mult{margin:14px 0 0;text-align:center;font-size:14px;color:var(--mute)}
+.mult b{color:#fff;font-size:18px}
+.mkt{margin:16px 0 0;background:var(--glass);border-radius:18px;padding:14px 16px}
+.mkt h3{margin:0 0 4px;font-size:15px}
+[hidden]{display:none!important}
+.rul{direction:ltr;position:relative;height:46px;margin:22px 6px 6px}
+.rul .bar{position:absolute;top:20px;left:0;right:0;height:8px;border-radius:4px;background:#3fc1cb}
+.rul .red{position:absolute;top:20px;left:0;height:8px;border-radius:4px;background:#ff6b5e}
+.rul i{position:absolute;top:14px;width:20px;height:20px;margin-left:-10px;border-radius:50%;border:2px solid #fff}
+.rul i.c{background:#8a9bb0;width:14px;height:14px;top:17px;margin-left:-7px}
+.rul i.me{background:#f77f00;border-width:3px}
+.rul i.mind{background:#fff;width:6px;border-radius:3px;margin-left:-3px;height:28px;top:10px;border:0}
+.rul em{position:absolute;top:-6px;font-style:normal;font-size:11px;color:var(--mute);transform:translateX(-50%);white-space:nowrap}
+.mkt p{margin:8px 0 0;font-size:14px;line-height:1.8}
+.terms .stp{margin-top:10px}
+</style>
 <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <link rel="manifest" href="pricing.webmanifest"><link rel="apple-touch-icon" href="../assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#14233b">
 </head>
@@ -101,71 +150,86 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
   <div class="head"><span>جعبه ابزار جابگرید · ابزار ۰۰۱</span><b>قیمت‌گذاری در ۶ قدم</b></div>
   <div class="prog" id="prog"></div>
 
-  <!-- 1 -->
+  <!-- 1 what you sell -->
   <section class="screen" data-s="1">
     <div class="step">قدم ۱ از ۶</div>
-    <div class="q">برای چه کاری می‌خوای قیمت بدی؟</div>
-    <div class="sub">این‌ها توی متن پیشنهادت به مشتری میاد.</div>
+    <div class="q">چی می‌فروشی؟</div>
+    <div class="sub">یکی رو انتخاب کن یا خودت بنویس.</div>
+    <div class="kinds" id="kinds"></div>
     <div class="fields">
-      <label class="fld">چه خدمتی؟<input id="service" placeholder="مثلاً طراحی لوگو"></label>
+      <label class="fld">اسم خدمت<input id="service" placeholder="مثلاً طراحی لوگو"></label>
+      <label class="fld">دقیقاً چی تحویل می‌دی؟<textarea id="deliv" placeholder="مثلاً لوگو در ۳ نسخه‌ی رنگی، سیاه‌سفید و آیکون + راهنمای رنگ و فونت"></textarea><small>هرچی دقیق‌تر بنویسی، ساعت‌ها و متن پیشنهادت دقیق‌تر می‌شه.</small></label>
       <label class="fld">اسم مشتری<input id="client" placeholder="اختیاری"></label>
-      <label class="fld">دقیقاً چی تحویل می‌دی؟<input id="deliv" placeholder="مثلاً لوگو + راهنمای رنگ و فونت"></label>
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- 2 tasks and hours -->
   <section class="screen" data-s="2">
     <div class="step">قدم ۲ از ۶</div>
-    <div class="q">اجرای این کار چند ساعت وقتت رو می‌گیره؟</div>
-    <div class="sub">فقط زمان انجام کار، بدون جلسه و اصلاحات.</div>
-    <div class="bignum"><input id="hWork" inputmode="decimal"><span>ساعت</span></div>
-    <div class="chips" data-for="hWork" data-v="5,10,14,20,30,40"></div>
+    <div class="q">این کار از چه مرحله‌هایی تشکیل شده؟</div>
+    <div class="sub">برای هر مرحله، ساعت واقعی کار خودت رو بذار. جلسه و اصلاحات رو جا ننداز.</div>
+    <button type="button" class="aibtn" id="aiBreak">🤖 با AI مرحله‌ها و ساعت‌ها رو پیشنهاد بده</button>
+    <div class="gaps" id="gaps" hidden></div>
+    <div class="tasks" id="tasks"></div>
+    <button type="button" class="addt" id="addTask">+ یه مرحله‌ی دیگه</button>
+    <div class="total"><span>جمع ساعت‌ها</span><b id="hSum"></b></div>
   </section>
 
-  <!-- 3 -->
+  <!-- 3 safety margin -->
   <section class="screen" data-s="3">
     <div class="step">قدم ۳ از ۶</div>
-    <div class="q">جلسه و اصلاحات چقدر وقت می‌بره؟</div>
-    <div class="sub">زمان‌هایی که معمولاً حساب نمی‌کنیم ولی ازمون گرفته می‌شه.</div>
-    <div class="stp"><div class="l">جلسه و هماهنگی<small>تماس، پیام، بریف</small></div><div class="c"><button type="button" data-inc="hMeet" data-d="1">+</button><input id="hMeet" inputmode="decimal"><button type="button" data-inc="hMeet" data-d="-1">−</button></div></div>
-    <div class="stp"><div class="l">اصلاحات<small>همه‌ی دورهای اصلاح روی هم</small></div><div class="c"><button type="button" data-inc="hRev" data-d="1">+</button><input id="hRev" inputmode="decimal"><button type="button" data-inc="hRev" data-d="-1">−</button></div></div>
-    <p class="hint" id="hTotal"></p>
+    <div class="q">یه حاشیه‌ی احتیاط بذاریم</div>
+    <div class="sub">تقریباً همه‌ی ما زمان کار رو کمتر از واقعیت تخمین می‌زنیم. پیام‌های اضافه، فایلی که دیر می‌رسه، یه بخش که سخت‌تر از انتظار درمیاد.</div>
+    <div class="seg" id="bufSeg"><button type="button" data-v="10">۱۰٪</button><button type="button" data-v="20">۲۰٪</button><button type="button" data-v="30">۳۰٪</button><button type="button" data-v="50">۵۰٪</button></div>
+    <div class="flow"><span>ساعت‌های تو<b id="fA"></b></span><span class="ar">←</span><span>با احتیاط<b id="fB"></b></span></div>
+    <p class="hint" style="text-align:center">۲۰٪ برای بیشتر کارها مناسبه. اگه مشتری جدیده یا کار رو قبلاً انجام ندادی، ۳۰٪ یا بیشتر بذار.</p>
   </section>
 
-  <!-- 4 -->
+  <!-- 4 hourly rate -->
   <section class="screen" data-s="4">
     <div class="step">قدم ۴ از ۶</div>
-    <div class="q">ماهی چقدر می‌خوای درآمد داشته باشی؟</div>
-    <div class="sub">از این عدد، حداقل نرخ ساعتیت حساب می‌شه.</div>
-    <div class="bignum"><input id="incomeM" inputmode="decimal"><span>میلیون تومان در ماه</span></div>
-    <div class="chips" data-for="incomeM" data-v="20,30,40,60,80,100"></div>
-    <details class="more"><summary>ساعت کاری و وقت قابل‌فروش (پیشرفته)</summary>
-      <label class="fld">ساعت کارت در ماه<input id="hMonth" inputmode="numeric"></label>
-      <label class="fld" style="margin-top:12px">چند درصد از وقتت واقعاً فروخته می‌شه؟ <b id="billOut" style="color:#fff"></b><input type="range" id="bill" min="40" max="100" step="5"><small>بقیه صرف پیدا کردن مشتری و کارهای اداری می‌شه؛ برای بیشتر فریلنسرها ۶۰ تا ۷۵٪.</small></label>
-    </details>
+    <div class="q">هر ساعت کارت حداقل چقدر می‌ارزه؟</div>
+    <div class="sub">یعنی کمترین پولی که حاضری برای یک ساعت کار بگیری.</div>
+    <div class="bignum"><input id="rateK" inputmode="numeric"><span>هزار تومان برای هر ساعت</span></div>
+    <div class="why"><b>چرا این عدد مهمه؟</b><br>کف قیمتت از همین درمیاد: <b>ساعت‌های این کار × نرخ ساعتی + هزینه‌ها</b>. اگه زیر کف قیمت بدی، عملاً داری ضرر می‌کنی. این عدد ذخیره می‌شه و دفعه‌ی بعد آماده‌ست.</div>
+    <p class="hint" id="rateSaved" hidden>از دفعه‌ی قبل ذخیره شده. اگه عوض شده، تغییرش بده.</p>
+    <button type="button" class="link" id="helpRate">نمی‌دونم، کمکم کن حسابش کنم</button>
+    <div class="helper" id="helper" hidden>
+      <div class="fields">
+        <label class="fld">ماهی چقدر می‌خوای درآمد داشته باشی؟ (میلیون تومان)<input id="incomeM" inputmode="decimal" placeholder="مثلاً ۴۰"></label>
+        <label class="fld">ماهی چند ساعت کار می‌کنی؟<input id="hMonth" inputmode="numeric"></label>
+        <label class="fld">چند درصد از این وقت، کار پولی برای مشتریه؟ <b id="billOut" style="color:#fff"></b><input type="range" id="bill" min="40" max="100" step="5"><small>بقیه‌اش صرف پیدا کردن مشتری، پیام‌ها و کارهای اداری می‌شه. برای بیشتر فریلنسرها ۶۰ تا ۷۵٪.</small></label>
+      </div>
+      <p class="hint" id="rateCalc"></p>
+      <button type="button" class="okbtn" id="useRate">همین رو بذار</button>
+    </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 5 cost and value -->
   <section class="screen" data-s="5">
     <div class="step">قدم ۵ از ۶</div>
-    <div class="q">هزینه و ارزش این کار</div>
+    <div class="q">هزینه‌ها و ارزش کار</div>
     <div class="fields">
-      <label class="fld">هزینه‌های مستقیم این پروژه (تومان)<input id="cost" inputmode="numeric" placeholder="۰"><small>نرم‌افزار، فونت، چاپ، رفت‌وآمد…</small></label>
+      <label class="fld">هزینه‌های مستقیم این پروژه (تومان)<input id="cost" inputmode="numeric" placeholder="۰"><small>نرم‌افزار، فونت، عکس، چاپ، رفت‌وآمد…</small></label>
     </div>
-    <div class="lbl">این کار برای مشتری چقدر ارزش داره؟</div>
-    <div class="seg" id="valSeg"><button type="button" data-v="1">کم</button><button type="button" data-v="1.1">متوسط</button><button type="button" data-v="1.25">زیاد</button></div>
-    <p class="hint">اگه کارت مستقیم فروش مشتری رو بالا می‌بره، ارزشش زیاده. روی گزینه‌های استاندارد و ویژه اثر می‌ذاره.</p>
+    <div class="lbl">سه سؤال درباره‌ی مشتری</div>
+    <div class="yn"><span>کارت مستقیم فروش یا درآمد مشتری رو بالا می‌بره؟</span><div class="b" data-q="q1"><button type="button" data-v="1">بله</button><button type="button" data-v="0">نه</button></div></div>
+    <div class="yn"><span>مشتری یه شرکت یا کسب‌وکار جاافتاده‌ست؟</span><div class="b" data-q="q2"><button type="button" data-v="1">بله</button><button type="button" data-v="0">نه</button></div></div>
+    <div class="yn"><span>کار فوریه یا مهلتش کوتاهه؟</span><div class="b" data-q="q3"><button type="button" data-v="1">بله</button><button type="button" data-v="0">نه</button></div></div>
+    <p class="mult" id="multOut"></p>
   </section>
 
-  <!-- 6 -->
+  <!-- 6 market -->
   <section class="screen" data-s="6">
-    <div class="step">قدم ۶ از ۶</div>
-    <div class="q">شرایط کار</div>
-    <div class="stp"><div class="l">اصلاحات داخل قیمت<small>بار</small></div><div class="c"><button type="button" data-inc="revs" data-d="1">+</button><input id="revs" inputmode="numeric"><button type="button" data-inc="revs" data-d="-1">−</button></div></div>
-    <div class="stp"><div class="l">مهلت تحویل<small>روز کاری</small></div><div class="c"><button type="button" data-inc="days" data-d="1">+</button><input id="days" inputmode="numeric"><button type="button" data-inc="days" data-d="-1">−</button></div></div>
-    <div class="stp"><div class="l">پیش‌پرداخت<small>درصد</small></div><div class="c"><button type="button" data-inc="pre" data-d="10">+</button><input id="pre" inputmode="numeric"><button type="button" data-inc="pre" data-d="-10">−</button></div></div>
-    <div class="stp"><div class="l">اعتبار قیمت<small>روز · به‌خاطر تورم مهمه</small></div><div class="c"><button type="button" data-inc="valid" data-d="1">+</button><input id="valid" inputmode="numeric"><button type="button" data-inc="valid" data-d="-1">−</button></div></div>
-    <div class="fields"><label class="fld">قیمتی که الان تو ذهنته (تومان)<input id="mind" inputmode="numeric" placeholder="اگه نمی‌دونی، خالی بذار"></label></div>
+    <div class="step">قدم ۶ از ۶ · اختیاری</div>
+    <div class="q">بقیه برای همین کار چقدر می‌گیرن؟</div>
+    <div class="sub">اگه قیمت ۲ یا ۳ نفر دیگه رو می‌دونی بنویس تا کنار قیمت خودت ببینی. اگه نمی‌دونی، رد شو.</div>
+    <div class="fields">
+      <label class="fld">قیمت رقیب ۱ (تومان)<input id="c1" inputmode="numeric" placeholder="اختیاری"></label>
+      <label class="fld">قیمت رقیب ۲ (تومان)<input id="c2" inputmode="numeric" placeholder="اختیاری"></label>
+      <label class="fld">قیمت رقیب ۳ (تومان)<input id="c3" inputmode="numeric" placeholder="اختیاری"></label>
+      <label class="fld">قیمتی که خودت تو ذهنت داری (تومان)<input id="mind" inputmode="numeric" placeholder="اختیاری"></label>
+    </div>
   </section>
 
   <!-- result -->
@@ -176,6 +240,7 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
     <div class="tabs" id="tabs"></div>
     <div class="kv" id="kv"></div>
     <p class="alert" id="alert" hidden></p>
+    <div class="mkt" id="mkt" hidden><h3>کنار قیمت بازار</h3><div class="rul" id="rul"></div><p id="mktTxt"></p></div>
     <div class="prop">
       <h3>متن پیشنهاد برای مشتری</h3>
       <label class="chk"><input type="checkbox" id="all3"> هر سه گزینه رو پیشنهاد بده</label>
@@ -184,6 +249,12 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
       <button type="button" class="aibtn" id="aiPolish">✨ با AI حرفه‌ای‌ترش کن</button>
       <button type="button" class="aibtn ghost" id="aiUndo" hidden>↩️ برگرد به متن اولیه</button>
     </div>
+    <details class="more terms"><summary>شرایط کار داخل متن (اصلاحات، تحویل، پیش‌پرداخت)</summary>
+      <div class="stp"><div class="l">اصلاحات داخل قیمت<small>بار · برای گزینه‌ی استاندارد</small></div><div class="c"><button type="button" data-inc="revs" data-d="1">+</button><input id="revs" inputmode="numeric"><button type="button" data-inc="revs" data-d="-1">−</button></div></div>
+      <div class="stp"><div class="l">مهلت تحویل<small>روز کاری</small></div><div class="c"><button type="button" data-inc="days" data-d="1">+</button><input id="days" inputmode="numeric"><button type="button" data-inc="days" data-d="-1">−</button></div></div>
+      <div class="stp"><div class="l">پیش‌پرداخت<small>درصد</small></div><div class="c"><button type="button" data-inc="pre" data-d="10">+</button><input id="pre" inputmode="numeric"><button type="button" data-inc="pre" data-d="-10">−</button></div></div>
+      <div class="stp"><div class="l">اعتبار قیمت<small>روز · به‌خاطر تورم مهمه</small></div><div class="c"><button type="button" data-inc="valid" data-d="1">+</button><input id="valid" inputmode="numeric"><button type="button" data-inc="valid" data-d="-1">−</button></div></div>
+    </details>
     <div class="prop">
       <h3>اگه مشتری گفت «گرونه!» چی بگم؟</h3>
       <button type="button" class="aibtn" id="aiDefend">🛡 ۳ جواب آماده با AI</button>
@@ -196,7 +267,7 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
       </div><small style="color:#7f93a8;font-size:12px">حاشیه‌ی سود هر گزینه، درصد بالای کف</small>
     </details>
     <button type="button" class="newbig" id="newBig">🔄 شروع یک قیمت‌گذاری جدید</button>
-    <p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن.</p>
+    <p class="foot">این ابزار قیمت رو از زمان، نرخ و هزینه‌ی خودت می‌سازه. AI اختیاریه و بدون اون هم همه‌چیز کار می‌کنه. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن.</p>
   </section>
 </div>
 <div class="nav"><button type="button" class="back" id="back">قبلی</button><button type="button" class="next" id="next">بعدی ←</button></div>
@@ -204,63 +275,149 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
 <script>
 (function(){
 var $=function(id){return document.getElementById(id)};
-var KEY='jg-tool-001-v2';
-var DEMO={service:'طراحی لوگو',client:'کافه نارنج',deliv:'لوگو + راهنمای رنگ و فونت',hMeet:'3',hWork:'14',hRev:'5',cost:'500000',incomeM:'40',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'10',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
-var BLANK={service:'',client:'',deliv:'',hMeet:'2',hWork:'',hRev:'2',cost:'',incomeM:'',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'7',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
-var IDS=['service','client','deliv','hMeet','hWork','hRev','cost','incomeM','hMonth','revs','days','pre','valid','mind','mB','mS','mP'];
-var NUMS=IDS.slice(3);
-var st={step:1,tier:1,val:'1.1',all3:false};
+var KEY='jg-tool-001-v3',RKEY='jg-rate-v1';
+var AI='https://jobgrade-ai.ali-jaccobi.workers.dev';
+var KINDS=[
+ ['logo','طراحی لوگو',[['بریف و تحقیق',2],['ایده و اسکچ',4],['اجرای دیجیتال',5],['ارائه و جلسه',1.5],['اصلاحات',3],['فایل‌های نهایی و راهنما',1.5]]],
+ ['post','طراحی پست و استوری',[['بریف و هماهنگی',1],['ایده و چیدمان',2],['طراحی',4],['اصلاحات',1.5],['خروجی برای هر سایز',1]]],
+ ['site','طراحی سایت',[['جلسه و نیازسنجی',3],['ساختار و صفحه‌ها',5],['طراحی',16],['پیاده‌سازی',24],['محتوا و تست',5],['اصلاحات',6],['تحویل و آموزش',2]]],
+ ['video','تدوین ویدیو',[['هماهنگی و دریافت فایل‌ها',1],['دیدن و انتخاب راش‌ها',2],['تدوین',5],['صدا، رنگ و زیرنویس',2],['اصلاحات',2],['خروجی نهایی',0.5]]],
+ ['content','تولید محتوا',[['بریف و تحقیق',2],['نوشتن',5],['ویرایش',1.5],['اصلاحات',1.5],['هماهنگی',1]]],
+ ['translate','ترجمه',[['خوندن و واژه‌نامه',1],['ترجمه',8],['ویرایش و بازخوانی',2],['اصلاحات',1]]],
+ ['teach','تدریس و آموزش',[['آماده کردن جلسه‌ها',4],['تدریس',8],['تمرین و پیگیری',2],['هماهنگی',1]]],
+ ['consult','مشاوره',[['آشنایی و جمع‌کردن اطلاعات',2],['بررسی و تحلیل',4],['جلسه‌ی مشاوره',2],['گزارش یا جمع‌بندی',2],['پیگیری',1]]]
+];
+var OTHER=[['بریف و جلسه',2],['انجام کار اصلی',10],['اصلاحات',3],['تحویل',1]];
+var BLANK={kind:'',service:'',client:'',deliv:'',tasks:[],buf:20,cost:'',q1:'',q2:'',q3:'',c1:'',c2:'',c3:'',mind:'',revs:'2',days:'7',pre:'50',valid:'7',mB:'15',mS:'35',mP:'70'};
+var IDS=['service','client','deliv','cost','c1','c2','c3','mind','revs','days','pre','valid','mB','mS','mP'];
+var NUMS=['cost','c1','c2','c3','mind','revs','days','pre','valid','mB','mS','mP'];
+var st={step:1,tier:1,kind:'',tasks:[],buf:20,q:{},lock:false,edited:false,tkind:''};
 var N=6;
 
 function toEn(s){return String(s).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)})}
-function num(id){var v=parseFloat(toEn($(id).value).replace(/[,،٬\s]/g,'').replace('٫','.'));return isFinite(v)?v:0}
+function pn(s){var v=parseFloat(toEn(s).replace(/[,،٬\s]/g,'').replace('٫','.'));return isFinite(v)?v:0}
+function num(id){return pn($(id).value)}
 function fa(n){return Math.round(n).toLocaleString('fa-IR')}
-function faD(n){return n.toLocaleString('fa-IR',{maximumFractionDigits:2})}
+function faD(n){return (+n).toLocaleString('fa-IR',{maximumFractionDigits:1})}
 function toman(n){return fa(n)+' تومان'}
 function short(n){return n>=1e6?(Math.round(n/1e5)/10).toLocaleString('fa-IR')+' م':fa(n/1000)+' هزار'}
 function up(x){var s=x>=1e7?1e5:x>=1e6?5e4:1e4;return Math.ceil(x/s)*s}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function kindOf(k){for(var i=0;i<KINDS.length;i++)if(KINDS[i][0]===k)return KINDS[i];return null}
 
-function fill(d){IDS.forEach(function(k){$(k).value=d[k]||''});NUMS.forEach(function(k){if($(k).value)$(k).value=faD(num(k))});$('bill').value=d.bill||70;st.val=String(d.val||'1.1')}
-function save(){var d={};IDS.forEach(function(k){d[k]=$(k).value});d.bill=$('bill').value;d.val=st.val;d.tier=st.tier;d.all3=$('all3').checked;d.step=st.step;try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+// rate settings live apart from the project, so a new price never asks again
+var R={rateK:'',incomeM:'',hMonth:'160',bill:'70'};
+try{Object.assign(R,JSON.parse(localStorage.getItem(RKEY)||'{}'))}catch(e){}
+function saveR(){R.rateK=$('rateK').value;R.incomeM=$('incomeM').value;R.hMonth=$('hMonth').value;R.bill=$('bill').value;try{localStorage.setItem(RKEY,JSON.stringify(R))}catch(e){}}
+var hadRate=pn(R.rateK)>0;
+
+function fill(d){
+  IDS.forEach(function(k){$(k).value=d[k]||''});NUMS.forEach(function(k){if($(k).value)$(k).value=faD(num(k))});
+  st.kind=d.kind||'';st.tasks=(d.tasks||[]).map(function(t){return {t:t.t,h:+t.h||0}});st.buf=d.buf==null?20:+d.buf;
+  st.q={q1:d.q1,q2:d.q2,q3:d.q3};st.edited=!!d.edited;st.tkind=d.tkind||'';
+}
+function save(){
+  var d={};IDS.forEach(function(k){d[k]=$(k).value});
+  d.kind=st.kind;d.tasks=st.tasks;d.buf=st.buf;d.q1=st.q.q1;d.q2=st.q.q2;d.q3=st.q.q3;d.edited=st.edited;d.tkind=st.tkind;
+  d.tier=st.tier;d.all3=$('all3').checked;d.step=st.step;
+  try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
+  saveR();
+}
+
+// ---- step 1: kinds
+$('kinds').innerHTML=KINDS.map(function(k){return '<button type="button" data-k="'+k[0]+'">'+k[1]+'</button>'}).join('')+'<button type="button" data-k="other">یه کار دیگه</button>';
+$('kinds').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.kind=b.dataset.k;var k=kindOf(st.kind);$('service').value=k?k[1]:'';if(!k)$('service').focus();render();upd()});
+$('service').addEventListener('input',function(){var v=this.value.trim(),hit='';KINDS.forEach(function(k){if(k[1]===v)hit=k[0]});st.kind=hit||(v?'other':'')});
+
+// ---- step 2: tasks
+function hRaw(){return st.tasks.reduce(function(a,t){return a+(+t.h||0)},0)}
+function loadTemplate(){var k=kindOf(st.kind),src=k?k[2]:OTHER;st.tasks=src.map(function(r){return {t:r[0],h:r[1]}});st.tkind=st.kind;st.edited=false}
+function drawTasks(){
+  $('tasks').innerHTML=st.tasks.map(function(t,i){return '<div class="task" data-i="'+i+'"><button type="button" class="tx" data-x="'+i+'" aria-label="حذف">✕</button><input class="tn" value="'+esc(t.t)+'" placeholder="اسم مرحله"><button type="button" class="tb" data-h="1">+</button><input class="th" inputmode="decimal" value="'+faD(t.h)+'"><button type="button" class="tb" data-h="-1">−</button><small>ساعت</small></div>'}).join('');
+  sums();
+}
+function sums(){var h=hRaw(),b=h*(1+st.buf/100);$('hSum').textContent=faD(h)+' ساعت';$('fA').textContent=faD(h)+' ساعت';$('fB').textContent=faD(Math.round(b*2)/2)+' ساعت'}
+$('tasks').addEventListener('input',function(e){
+  var row=e.target.closest('.task');if(!row)return;var i=+row.dataset.i;st.edited=true;
+  if(e.target.classList.contains('tn'))st.tasks[i].t=e.target.value;else st.tasks[i].h=pn(e.target.value);
+  sums();upd();save();
+});
+$('tasks').addEventListener('click',function(e){
+  var x=e.target.closest('[data-x]');if(x){st.tasks.splice(+x.dataset.x,1);st.edited=true;drawTasks();upd();save();return}
+  var b=e.target.closest('[data-h]');if(!b)return;var row=b.closest('.task'),i=+row.dataset.i;
+  st.tasks[i].h=Math.max(0,(+st.tasks[i].h||0)+(+b.dataset.h)*(st.tasks[i].h<2&&b.dataset.h==='-1'||st.tasks[i].h<1?0.5:1));st.edited=true;
+  row.querySelector('.th').value=faD(st.tasks[i].h);sums();upd();save();
+});
+$('addTask').onclick=function(){st.tasks.push({t:'',h:1});st.edited=true;drawTasks();var r=$('tasks').lastElementChild;if(r)r.querySelector('.tn').focus();upd()};
+
+// ---- step 3: buffer
+$('bufSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.buf=+b.dataset.v;render()});
+
+// ---- step 4: rate
+function helperRate(){var inc=pn($('incomeM').value)*1e6,hm=pn($('hMonth').value),bill=+$('bill').value,sell=hm*bill/100;return sell>0&&inc>0?inc/sell:0}
+$('helpRate').onclick=function(){$('helper').hidden=!$('helper').hidden};
+$('useRate').onclick=function(){var r=helperRate();if(r>0){$('rateK').value=fa(Math.ceil(r/1000/10)*10);$('helper').hidden=true;render();upd()}};
+
+// ---- step 5: yes/no
+document.querySelectorAll('.yn .b').forEach(function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.q[g.dataset.q]=b.dataset.v;render()})});
+function mult(){return 1+(st.q.q1==='1'?0.15:0)+(st.q.q2==='1'?0.1:0)+(st.q.q3==='1'?0.1:0)}
 
 function calc(){
-  var H=num('hMeet')+num('hWork')+num('hRev'),cost=num('cost'),inc=num('incomeM')*1e6,hm=num('hMonth'),bill=+$('bill').value;
-  var sell=hm*bill/100,rate=sell>0?inc/sell:0,floor=H*rate+cost,v=parseFloat(st.val),revs=num('revs'),days=num('days');
+  var raw=hRaw(),H=raw*(1+st.buf/100),cost=num('cost'),rate=pn($('rateK').value)*1000,floor=H*rate+cost,v=mult(),revs=num('revs'),days=num('days');
   var m=[num('mB'),num('mS'),num('mP')].map(function(x){return x/100});
   var T=[{name:'پایه',price:up(floor*(1+m[0])),revs:Math.max(1,revs-1),days:days,extra:'دامنه‌ی کار دقیقاً همونی که توافق شده'},
          {name:'استاندارد',price:up(floor*(1+m[1])*v),revs:revs,days:days,extra:'پیشنهاد اصلی تو'},
          {name:'ویژه',price:up(floor*(1+m[2])*v),revs:revs+2,days:Math.max(1,Math.round(days*.7)),extra:'پشتیبانی ۱۴ روزه بعد از تحویل'}];
   T.forEach(function(t){t.eff=H>0?(t.price-cost)/H:0});
-  return {H:H,cost:cost,inc:inc,hm:hm,bill:bill,sell:sell,rate:rate,floor:floor,v:v,T:T,mind:num('mind')};
+  var comp=['c1','c2','c3'].map(num).filter(function(x){return x>0});
+  return {raw:raw,H:H,cost:cost,rate:rate,floor:floor,v:v,T:T,mind:num('mind'),comp:comp};
 }
 
 // gauge: semicircle, left = 0, right = max
 function pt(t,r){var a=Math.PI*(1-t);return [140+r*Math.cos(a),150-r*Math.sin(a)]}
-function arc(t0,t1,col,w,cap){var r=118,p0=pt(t0,r),p1=pt(t1,r),lg=0;return '<path d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' A'+r+' '+r+' 0 '+lg+' 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'" fill="none" stroke-linecap="'+(cap||'butt')+'"/>'}
+function arc(t0,t1,col,w,cap){var r=118,p0=pt(t0,r),p1=pt(t1,r);return '<path d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' A'+r+' '+r+' 0 0 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'" fill="none" stroke-linecap="'+(cap||'butt')+'"/>'}
 function gauge(c){
   var t=c.T[st.tier],max=Math.max(c.T[2].price,c.mind)*1.1||1,f=Math.min(.98,c.floor/max);
   var h=arc(0,1,'rgba(255,255,255,.12)',18,'round')+arc(0.001,f,'#ff6b5e',18,'round')+arc(f,0.999,'#3fc1cb',18);
   c.T.forEach(function(x,i){var p=pt(Math.min(.98,x.price/max),118);h+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(i===st.tier?13:5)+'" fill="'+(i===st.tier?'#f77f00':'#0b1424')+'" stroke="#fff" stroke-width="'+(i===st.tier?4:2)+'"/>'});
   if(c.mind>0){var a=pt(Math.min(.98,c.mind/max),104),b=pt(Math.min(.98,c.mind/max),134);h+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#fff" stroke-width="4" stroke-linecap="round"/>'}
-  $('gsvg').innerHTML=h;
-  $('gPrice').textContent=short(t.price);
+  $('gsvg').innerHTML=h;$('gPrice').textContent=short(t.price);
   var pct=c.floor>0?Math.round((t.price/c.floor-1)*100):0;
   $('gSub').textContent='تومان · '+fa(pct)+'٪ بالاتر از کف';
 }
+function market(c){
+  if(!c.comp.length){$('mkt').hidden=true;return}$('mkt').hidden=false;
+  var t=c.T[st.tier],all=c.comp.concat([t.price,c.floor,c.mind||0]),max=Math.max.apply(null,all)*1.08;
+  function x(v){return (v/max*100).toFixed(1)+'%'}
+  var h='<div class="bar"></div><div class="red" style="width:'+x(c.floor)+'"></div><em style="left:'+x(c.floor)+'">کف</em>';
+  c.comp.forEach(function(v){h+='<i class="c" style="left:'+x(v)+'"></i>'});
+  if(c.mind>0)h+='<i class="mind" style="left:'+x(c.mind)+'"></i>';
+  h+='<i class="me" style="left:'+x(t.price)+'"></i>';
+  $('rul').innerHTML=h;
+  var avg=c.comp.reduce(function(a,b){return a+b},0)/c.comp.length,d=Math.round((t.price/avg-1)*100),s;
+  if(c.floor>avg)s='میانگین قیمت رقیب‌ها ('+toman(avg)+') از کف قیمت تو کمتره. یا کارت با اون‌ها فرق داره و باید این فرق رو توی پیشنهاد نشون بدی، یا ساعت‌ها رو کم کن.';
+  else if(d>25)s='گزینه‌ی '+t.name+' '+fa(d)+'٪ از میانگین رقیب‌ها ('+toman(avg)+') بالاتره. اگه کارت بهتره، توی پیشنهاد بگو چرا؛ وگرنه گزینه‌ی پایه رو جلو بذار.';
+  else if(d<-15)s='گزینه‌ی '+t.name+' '+fa(-d)+'٪ از میانگین رقیب‌ها ('+toman(avg)+') پایین‌تره. جا داری قیمتت رو بالاتر ببری.';
+  else s='قیمتت نزدیک میانگین رقیب‌هاست ('+toman(avg)+'). قیمت منطقی و قابل دفاعیه.';
+  $('mktTxt').innerHTML='<span style="color:#f77f00">●</span> قیمت تو · <span style="color:#8a9bb0">●</span> رقیب‌ها'+(c.mind>0?' · ▮ قیمت ذهنی':'')+'<br>'+s;
+}
 
 function render(){
-  var c=calc(),ok=c.H>0&&c.rate>0;
-  $('billOut').textContent=fa(c.bill)+'٪';
-  $('hTotal').textContent=c.H>0?'کل زمان این پروژه: '+faD(c.H)+' ساعت':'';
-  Array.prototype.forEach.call(document.querySelectorAll('#valSeg button'),function(b){b.classList.toggle('on',b.dataset.v===st.val)});
-  Array.prototype.forEach.call(document.querySelectorAll('.chips'),function(g){var v=num(g.dataset.for);Array.prototype.forEach.call(g.children,function(b){b.classList.toggle('on',+b.dataset.v===v)})});
-  if(ok&&st.step===7){
+  var c=calc();
+  $('billOut').textContent=fa(+$('bill').value)+'٪';
+  var hr=helperRate();$('rateCalc').textContent=hr>0?'نرخ ساعتی تو: حدود '+fa(Math.ceil(hr/1000/10)*10)+' هزار تومان':'';
+  document.querySelectorAll('#kinds button').forEach(function(b){b.classList.toggle('on',b.dataset.k===st.kind)});
+  document.querySelectorAll('#bufSeg button').forEach(function(b){b.classList.toggle('on',+b.dataset.v===st.buf)});
+  document.querySelectorAll('.yn .b').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',st.q[g.dataset.q]===b.dataset.v)})});
+  $('multOut').innerHTML='ضریب ارزش: <b>×'+c.v.toLocaleString('fa-IR')+'</b><br><small>روی گزینه‌های استاندارد و ویژه اثر می‌ذاره، نه کف قیمت.</small>';
+  sums();
+  if(st.step===7&&c.H>0&&c.rate>0){
     gauge(c);
     $('tabs').innerHTML=c.T.map(function(t,i){return '<button type="button" data-i="'+i+'" class="'+(i===st.tier?'on':'')+'">'+t.name+'<small>'+short(t.price)+'</small></button>'}).join('');
     var t=c.T[st.tier];
-    $('kv').innerHTML=[['قیمت این گزینه',toman(t.price)],['کف قیمت (زیرش ضرره)',toman(c.floor)],['حداقل نرخ ساعتی تو',toman(c.rate)],['درآمد ساعتی با این قیمت',toman(t.eff)],['اصلاحات',fa(t.revs)+' بار'],['تحویل',fa(t.days)+' روز کاری']].map(function(r){return '<div><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('');
-    alertBox(c);proposal(c);
-    $('calc').innerHTML=[['ساعت قابل‌فروش در ماه',fa(c.hm)+' × '+fa(c.bill)+'٪ = '+fa(c.sell)],['حداقل نرخ ساعتی',toman(c.rate)],['کل ساعت پروژه',faD(c.H)],['کف قیمت',faD(c.H)+' × '+fa(c.rate)+' + '+fa(c.cost)],['ضریب ارزش','×'+c.v.toLocaleString('fa-IR')]].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('');
+    $('kv').innerHTML=[['قیمت این گزینه',toman(t.price)],['کف قیمت (زیرش ضرره)',toman(c.floor)],['ساعت‌ها با احتیاط',faD(Math.round(c.H*10)/10)+' ساعت'],['درآمد ساعتی با این قیمت',toman(t.eff)],['اصلاحات',fa(t.revs)+' بار'],['تحویل',fa(t.days)+' روز کاری']].map(function(r){return '<div><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('');
+    alertBox(c);market(c);proposal(c);
+    $('calc').innerHTML=[['ساعت مرحله‌ها',faD(c.raw)],['حاشیه‌ی احتیاط','+'+fa(st.buf)+'٪ = '+faD(Math.round(c.H*10)/10)+' ساعت'],['نرخ ساعتی',toman(c.rate)],['کف قیمت',faD(Math.round(c.H*10)/10)+' × '+fa(c.rate)+' + '+fa(c.cost)],['ضریب ارزش','×'+c.v.toLocaleString('fa-IR')]].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('');
   }
   save();
 }
@@ -268,8 +425,8 @@ function alertBox(c){
   var a=$('alert'),P=c.mind;if(!(P>0)){a.hidden=true;return}a.hidden=false;
   var eP=c.H>0?(P-c.cost)/c.H:0;
   if(P<=c.cost){a.className='alert bad';a.textContent='قیمتی که تو ذهنته حتی هزینه‌های مستقیم پروژه رو پوشش نمی‌ده.'}
-  else if(P<c.floor){a.className='alert bad';a.textContent='قیمتی که تو ذهنته '+toman(c.floor-P)+' زیر کف قیمتته. با این قیمت ساعتی '+toman(eP)+' درمیاری، ولی برای درآمد هدفت ساعتی '+toman(c.rate)+' لازم داری.'}
-  else if(P<c.T[0].price){a.className='alert warn';a.textContent='قیمت ذهنیت بالای کفه ولی حاشیه‌ی اطمینان نداره. اگه کار یه کم طول بکشه، از درآمد هدفت عقب می‌افتی.'}
+  else if(P<c.floor){a.className='alert bad';a.textContent='قیمتی که تو ذهنته '+toman(c.floor-P)+' زیر کف قیمتته. با این قیمت ساعتی '+toman(eP)+' درمیاری، ولی نرخ خودت ساعتی '+toman(c.rate)+' بود.'}
+  else if(P<c.T[0].price){a.className='alert warn';a.textContent='قیمت ذهنیت بالای کفه ولی حاشیه‌ی اطمینان نداره. اگه کار یه کم طول بکشه، ضرر می‌کنی.'}
   else{a.className='alert ok';a.textContent='قیمت ذهنیت سالمه و ساعتی '+toman(eP)+' برات درمیاره.'}
 }
 function proposal(c){
@@ -278,41 +435,42 @@ function proposal(c){
   function line(t){return '• '+t.name+': '+toman(t.price)+' · '+fa(t.revs)+' بار اصلاح · تحویل '+fa(t.days)+' روز کاری'+(t.name==='ویژه'?' · '+t.extra:'')}
   var x='سلام'+(cl?' '+cl:'')+'،\nممنون از اعتمادتون. پیشنهاد قیمت '+s+' به این شرحه:\n\n';
   if(dv)x+='تحویلی: '+dv+'\n';
+  var steps=st.tasks.filter(function(t){return t.t&&t.t.trim()}).map(function(t){return t.t.trim()});
+  if(steps.length)x+='مراحل کار: '+steps.join('، ')+'\n';
   if($('all3').checked)x+='\n'+c.T.map(line).join('\n')+'\n';
-  else{var t=c.T[st.tier];x+='قیمت: '+toman(t.price)+'\nاصلاحات: تا '+fa(t.revs)+' بار، در محدوده‌ی همین کار\nزمان تحویل: '+fa(t.days)+' روز کاری بعد از دریافت پیش‌پرداخت و اطلاعات لازم\n'+(t.name==='ویژه'?t.extra+'\n':'')}
+  else{var t=c.T[st.tier];x+='\nقیمت: '+toman(t.price)+'\nاصلاحات: تا '+fa(t.revs)+' بار، در محدوده‌ی همین کار\nزمان تحویل: '+fa(t.days)+' روز کاری بعد از دریافت پیش‌پرداخت و اطلاعات لازم\n'+(t.name==='ویژه'?t.extra+'\n':'')}
   x+='\nپرداخت: '+fa(pre)+' درصد پیش‌پرداخت و باقی هنگام تحویل.\nاصلاحات بیشتر یا تغییر در دامنه‌ی کار جداگانه قیمت‌گذاری می‌شه.\nاین قیمت تا '+fa(valid)+' روز معتبره.\n\nاگه سؤالی دارید خوشحال می‌شم صحبت کنیم.';
   $('prop').value=x;
 }
 
-function need(){ // can we leave this step?
-  if(st.step===2)return num('hWork')>0;
-  if(st.step===4)return num('incomeM')>0&&num('hMonth')>0;
+function need(){
+  if(st.step===1)return !!$('service').value.trim();
+  if(st.step===2)return hRaw()>0;
+  if(st.step===4)return pn($('rateK').value)>0;
   return true;
 }
 function go(s){
-  st.step=Math.max(1,Math.min(7,s));
-  Array.prototype.forEach.call(document.querySelectorAll('.screen'),function(e){e.classList.toggle('on',+e.dataset.s===st.step)});
+  var from=st.step;st.step=Math.max(1,Math.min(7,s));
+  if(st.step===2&&(!st.tasks.length||(!st.edited&&st.tkind!==st.kind))){loadTemplate();$('gaps').hidden=true}
+  if(st.step===2)drawTasks();
+  if(st.step===4){$('rateSaved').hidden=!hadRate;$('helper').hidden=true}
+  document.querySelectorAll('.screen').forEach(function(e){e.classList.toggle('on',+e.dataset.s===st.step)});
   $('prog').innerHTML=Array.apply(null,Array(N)).map(function(_,i){return '<i class="'+(i<Math.min(st.step,N)?'on':'')+'"></i>'}).join('');
-  $('back').textContent=st.step===7?'ویرایش':'قبلی';
-  $('back').disabled=st.step===1;
-  $('next').textContent=st.step===6?'ببین قیمتت چنده ←':st.step===7?'📋 کپی پیشنهاد':'بعدی ←';
+  $('back').textContent=st.step===7?'ویرایش':'قبلی';$('back').disabled=st.step===1;
+  var emptyMkt=!['c1','c2','c3','mind'].some(function(k){return num(k)>0});
+  $('next').textContent=st.step===6?(emptyMkt?'رد شو و قیمتم رو ببین ←':'ببین قیمتت چنده ←'):st.step===7?'📋 کپی پیشنهاد':'بعدی ←';
   window.scrollTo(0,0);render();upd();
 }
-function upd(){$('next').disabled=!need()}
+function upd(){$('next').disabled=!need();if(st.step===6)go6label()}
+function go6label(){var e=!['c1','c2','c3','mind'].some(function(k){return num(k)>0});$('next').textContent=e?'رد شو و قیمتم رو ببین ←':'ببین قیمتت چنده ←'}
 
-// chips
-Array.prototype.forEach.call(document.querySelectorAll('.chips'),function(g){
-  g.innerHTML=g.dataset.v.split(',').map(function(v){return '<button type="button" data-v="'+v+'">'+fa(+v)+'</button>'}).join('');
-  g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$(g.dataset.for).value=fa(+b.dataset.v);render();upd()});
-});
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-inc]');if(b){var id=b.dataset.inc,v=Math.max(0,num(id)+(+b.dataset.d));if(id==='pre')v=Math.min(100,v);$(id).value=faD(v);render();upd();return}
-  var s=e.target.closest('#valSeg button');if(s){st.val=s.dataset.v;render();return}
   var t=e.target.closest('#tabs button');if(t){st.tier=+t.dataset.i;st.lock=false;$('aiUndo').hidden=true;render();return}
 });
-document.addEventListener('input',function(e){if(e.target&&e.target.id==='prop'){st.lock=true;return}render();upd()});
+document.addEventListener('input',function(e){var id=e.target&&e.target.id;if(id==='prop'){st.lock=true;return}if(e.target.closest&&e.target.closest('#tasks'))return;render();upd()});
 $('all3').addEventListener('change',function(){st.lock=false;$('aiUndo').hidden=true;render()});
-NUMS.forEach(function(k){$(k).addEventListener('blur',function(){if($(k).value.trim())$(k).value=faD(num(k))})});
+NUMS.concat(['rateK']).forEach(function(k){$(k).addEventListener('blur',function(){if($(k).value.trim())$(k).value=k==='rateK'?fa(num(k)):faD(num(k))})});
 $('back').onclick=function(){go(st.step-1)};
 $('next').onclick=function(){
   if(st.step<7){if(need())go(st.step+1);return}
@@ -321,33 +479,44 @@ $('next').onclick=function(){
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(function(){show(true)},function(){t.select();try{done=document.execCommand('copy')}catch(e){}show(done)})}
   else{t.select();try{done=document.execCommand('copy')}catch(e){}show(done)}
 };
-// New price: clear this project's answers, keep the person's own settings (income, work hours, margins, payment terms).
 function newPrice(){
-  var msg='اطلاعات این پروژه پاک بشه و قیمت‌گذاری جدید شروع بشه؟ درآمد ماهانه و تنظیمات خودت می‌مونه.';
+  var msg='اطلاعات این پروژه پاک بشه و قیمت‌گذاری جدید شروع بشه؟ نرخ ساعتی و تنظیماتت می‌مونه.';
   var tg=window.Telegram&&Telegram.WebApp;
   if(tg&&tg.initData&&tg.isVersionAtLeast&&tg.isVersionAtLeast('6.2')){tg.showConfirm(msg,function(ok){if(ok)doNew()});return}
   if(confirm(msg))doNew();
 }
 function doNew(){
-  var keep={};['incomeM','hMonth','pre','valid','mB','mS','mP'].forEach(function(k){keep[k]=$(k).value});
-  var b=$('bill').value;fill(Object.assign({},BLANK,keep,{bill:b}));st.tier=1;st.lock=false;$('aiUndo').hidden=true;$('defOut').hidden=true;$('all3').checked=false;go(1);$('service').focus();
+  var keep={};['revs','days','pre','valid','mB','mS','mP'].forEach(function(k){keep[k]=$(k).value});keep.buf=st.buf;
+  fill(Object.assign({},BLANK,keep));hadRate=pn($('rateK').value)>0;st.tier=1;st.lock=false;
+  $('aiUndo').hidden=true;$('defOut').hidden=true;$('gaps').hidden=true;$('all3').checked=false;go(1);
 }
 $('newTop').onclick=newPrice;$('newBig').onclick=newPrice;
-// AI helpers (through the Jobgrade proxy; the AI key never reaches the browser)
-var AI='https://jobgrade-ai.ali-jaccobi.workers.dev';
+
+// ---- AI (optional, through the Jobgrade proxy; the key never reaches the browser)
 function aiMsg(t){var m=$('aiMsg');m.textContent=t||'';m.hidden=!t}
-function ai(task,text,btn,label,done){
+function ai(task,text,btn,label,done,msgEl){
   var tg=window.Telegram&&Telegram.WebApp,u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;
-  btn.disabled=true;btn.textContent='⏳ چند ثانیه صبر کن...';aiMsg('');
+  var say=msgEl?function(t){msgEl.innerHTML=t?esc(t):'';msgEl.hidden=!t}:aiMsg;
+  btn.disabled=true;btn.textContent='⏳ چند ثانیه صبر کن...';say('');
   fetch(AI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:task,text:text,uid:u&&u.id?'tg'+u.id:''})})
   .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
   .then(function(x){
-    if(x.ok&&x.d.text){done(x.d.text);aiMsg('AI امروز '+fa(x.d.left)+' بار دیگه برات کار می‌کنه.')}
-    else aiMsg(x.d&&x.d.message||'AI الان جواب نداد. چند دقیقه‌ی دیگه دوباره امتحان کن.');
+    if(x.ok&&x.d.text){if(done(x.d.text)!==false&&!msgEl)aiMsg('AI امروز '+fa(x.d.left)+' بار دیگه برات کار می‌کنه.')}
+    else say(x.d&&x.d.message||'AI الان جواب نداد. چند دقیقه‌ی دیگه دوباره امتحان کن.');
   })
-  .catch(function(){aiMsg('به AI وصل نشد. اینترنتت رو چک کن و دوباره امتحان کن. بقیه‌ی ابزار بدون اینترنت هم کار می‌کنه.')})
+  .catch(function(){say('به AI وصل نشد. اشکالی نداره؛ مرحله‌های آماده رو خودت ویرایش کن و ادامه بده.')})
   .then(function(){btn.disabled=false;btn.textContent=label});
 }
+$('aiBreak').onclick=function(){
+  var s=$('service').value.trim(),d=$('deliv').value.trim();if(!s)return;
+  ai('breakdown','خدمت: '+s+'\nتحویلی: '+(d||'(نوشته نشده)'),this,'🤖 با AI مرحله‌ها و ساعت‌ها رو پیشنهاد بده',function(out){
+    var j=null;try{j=JSON.parse(out.slice(out.indexOf('{'),out.lastIndexOf('}')+1))}catch(e){}
+    if(!j||!j.tasks||!j.tasks.length){$('gaps').hidden=false;$('gaps').textContent='جواب AI قابل استفاده نبود. مرحله‌های آماده رو خودت ویرایش کن.';return false}
+    st.tasks=j.tasks.slice(0,8).map(function(t){return {t:String(t.t||t.title||''),h:Math.max(0.5,Math.round((+t.h||1)*2)/2)}});st.edited=true;st.tkind=st.kind;drawTasks();upd();save();
+    var g=(j.gaps||[]).slice(0,2);
+    $('gaps').innerHTML=g.length?'<b>⚠️ قبل از قیمت دادن، این‌ها رو با مشتری روشن کن:</b>'+g.map(function(x){return '• '+esc(x)}).join('<br>'):'';$('gaps').hidden=!g.length;
+  },null);
+};
 var orig='';
 $('aiPolish').onclick=function(){
   var t=$('prop').value.trim();if(!t)return;
@@ -356,13 +525,15 @@ $('aiPolish').onclick=function(){
 $('aiUndo').onclick=function(){if(orig)$('prop').value=orig;$('aiUndo').hidden=true};
 $('aiDefend').onclick=function(){
   var c=calc();if(!(c.H>0&&c.rate>0))return;var t=c.T[st.tier];
-  var info='خدمت: '+($('service').value.trim()||'پروژه')+'\nتحویلی: '+($('deliv').value.trim()||'-')+'\nقیمت پیشنهادی: '+toman(t.price)+' (گزینه‌ی '+t.name+')\nکل زمان کار: '+faD(c.H)+' ساعت\nاصلاحات: '+fa(t.revs)+' بار\nتحویل: '+fa(t.days)+' روز کاری\nگزینه‌های دیگه: '+c.T.map(function(x){return x.name+' '+toman(x.price)}).join('، ');
+  var info='خدمت: '+($('service').value.trim()||'پروژه')+'\nتحویلی: '+($('deliv').value.trim()||'-')+'\nمراحل کار: '+st.tasks.map(function(x){return x.t}).join('، ')+'\nقیمت پیشنهادی: '+toman(t.price)+' (گزینه‌ی '+t.name+')\nکل زمان کار: '+faD(Math.round(c.H))+' ساعت\nاصلاحات: '+fa(t.revs)+' بار\nتحویل: '+fa(t.days)+' روز کاری\nگزینه‌های دیگه: '+c.T.map(function(x){return x.name+' '+toman(x.price)}).join('، ');
   ai('defend',info,this,'🛡 ۳ جواب آماده با AI',function(out){var o=$('defOut');o.textContent=out;o.hidden=false});
 };
 
+// ---- start
+$('rateK').value=R.rateK||'';$('incomeM').value=R.incomeM||'';$('hMonth').value=R.hMonth||'160';$('bill').value=R.bill||'70';
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){fill(Object.assign({},BLANK,saved));st.tier=saved.tier==null?1:saved.tier;$('all3').checked=!!saved.all3;go(saved.step||1)}
-else{fill(DEMO);go(1)}
+else{fill(BLANK);go(1)}
 })();
 </script>
 <!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
