@@ -82,6 +82,11 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
 .chk input{width:20px;height:20px;accent-color:var(--orange)}
 .copied{font-size:13.5px;color:var(--teal);text-align:center;margin-top:8px}
 .newp{font:inherit;font-size:13px;color:#fff;background:var(--glass2);border:1px solid var(--ln);border-radius:20px;padding:6px 14px;cursor:pointer}
+.aibtn{display:block;width:100%;margin:10px 0 0;font:inherit;font-weight:700;font-size:14.5px;color:#fff;background:linear-gradient(135deg,#7b5cff,#3fc1cb);border:0;border-radius:14px;padding:12px;cursor:pointer}
+.aibtn:disabled{opacity:.6;cursor:wait}
+.aibtn.ghost{background:transparent;border:1.5px solid #7b5cff;color:#cfc3ff}
+.aimsg{font-size:13px;color:#9fb0c2;text-align:center;margin:8px 0 0;line-height:1.7}
+.aiout{margin:10px 0 0;white-space:pre-wrap;font-size:14.5px;line-height:1.9;background:rgba(0,0,0,.18);border:1px solid var(--ln);border-radius:12px;padding:12px}
 .newbig{display:block;width:100%;margin:18px 0 0;font:inherit;font-weight:700;font-size:15px;color:#fff;background:transparent;border:1.5px dashed var(--ln);border-radius:16px;padding:14px;cursor:pointer}
 .foot{font-size:12.5px;color:#7f93a8;margin:18px 0 0;line-height:1.8}
 .calc td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
@@ -176,7 +181,15 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
       <label class="chk"><input type="checkbox" id="all3"> هر سه گزینه رو پیشنهاد بده</label>
       <textarea id="prop" aria-label="متن پیشنهاد قیمت"></textarea>
       <p class="copied" id="copied" hidden></p>
+      <button type="button" class="aibtn" id="aiPolish">✨ با AI حرفه‌ای‌ترش کن</button>
+      <button type="button" class="aibtn ghost" id="aiUndo" hidden>↩️ برگرد به متن اولیه</button>
     </div>
+    <div class="prop">
+      <h3>اگه مشتری گفت «گرونه!» چی بگم؟</h3>
+      <button type="button" class="aibtn" id="aiDefend">🛡 ۳ جواب آماده با AI</button>
+      <div class="aiout" id="defOut" hidden></div>
+    </div>
+    <p class="aimsg" id="aiMsg" hidden></p>
     <details class="more"><summary>محاسبه چطور انجام شد؟</summary><table class="calc"><tbody id="calc"></tbody></table>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
         <label class="fld">پایه ٪<input id="mB" inputmode="numeric"></label><label class="fld">استاندارد ٪<input id="mS" inputmode="numeric"></label><label class="fld">ویژه ٪<input id="mP" inputmode="numeric"></label>
@@ -260,6 +273,7 @@ function alertBox(c){
   else{a.className='alert ok';a.textContent='قیمت ذهنیت سالمه و ساعتی '+toman(eP)+' برات درمیاره.'}
 }
 function proposal(c){
+  if(st.lock)return;
   var s=$('service').value.trim()||'پروژه',cl=$('client').value.trim(),dv=$('deliv').value.trim(),pre=num('pre'),valid=num('valid');
   function line(t){return '• '+t.name+': '+toman(t.price)+' · '+fa(t.revs)+' بار اصلاح · تحویل '+fa(t.days)+' روز کاری'+(t.name==='ویژه'?' · '+t.extra:'')}
   var x='سلام'+(cl?' '+cl:'')+'،\nممنون از اعتمادتون. پیشنهاد قیمت '+s+' به این شرحه:\n\n';
@@ -294,10 +308,10 @@ Array.prototype.forEach.call(document.querySelectorAll('.chips'),function(g){
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-inc]');if(b){var id=b.dataset.inc,v=Math.max(0,num(id)+(+b.dataset.d));if(id==='pre')v=Math.min(100,v);$(id).value=faD(v);render();upd();return}
   var s=e.target.closest('#valSeg button');if(s){st.val=s.dataset.v;render();return}
-  var t=e.target.closest('#tabs button');if(t){st.tier=+t.dataset.i;render();return}
+  var t=e.target.closest('#tabs button');if(t){st.tier=+t.dataset.i;st.lock=false;$('aiUndo').hidden=true;render();return}
 });
-document.addEventListener('input',function(){render();upd()});
-$('all3').addEventListener('change',render);
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='prop'){st.lock=true;return}render();upd()});
+$('all3').addEventListener('change',function(){st.lock=false;$('aiUndo').hidden=true;render()});
 NUMS.forEach(function(k){$(k).addEventListener('blur',function(){if($(k).value.trim())$(k).value=faD(num(k))})});
 $('back').onclick=function(){go(st.step-1)};
 $('next').onclick=function(){
@@ -316,9 +330,35 @@ function newPrice(){
 }
 function doNew(){
   var keep={};['incomeM','hMonth','pre','valid','mB','mS','mP'].forEach(function(k){keep[k]=$(k).value});
-  var b=$('bill').value;fill(Object.assign({},BLANK,keep,{bill:b}));st.tier=1;$('all3').checked=false;go(1);$('service').focus();
+  var b=$('bill').value;fill(Object.assign({},BLANK,keep,{bill:b}));st.tier=1;st.lock=false;$('aiUndo').hidden=true;$('defOut').hidden=true;$('all3').checked=false;go(1);$('service').focus();
 }
 $('newTop').onclick=newPrice;$('newBig').onclick=newPrice;
+// AI helpers (through the Jobgrade proxy; the AI key never reaches the browser)
+var AI='https://jobgrade-ai.ali-jaccobi.workers.dev';
+function aiMsg(t){var m=$('aiMsg');m.textContent=t||'';m.hidden=!t}
+function ai(task,text,btn,label,done){
+  var tg=window.Telegram&&Telegram.WebApp,u=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user;
+  btn.disabled=true;btn.textContent='⏳ چند ثانیه صبر کن...';aiMsg('');
+  fetch(AI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:task,text:text,uid:u&&u.id?'tg'+u.id:''})})
+  .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
+  .then(function(x){
+    if(x.ok&&x.d.text){done(x.d.text);aiMsg('AI امروز '+fa(x.d.left)+' بار دیگه برات کار می‌کنه.')}
+    else aiMsg(x.d&&x.d.message||'AI الان جواب نداد. چند دقیقه‌ی دیگه دوباره امتحان کن.');
+  })
+  .catch(function(){aiMsg('به AI وصل نشد. اینترنتت رو چک کن و دوباره امتحان کن. بقیه‌ی ابزار بدون اینترنت هم کار می‌کنه.')})
+  .then(function(){btn.disabled=false;btn.textContent=label});
+}
+var orig='';
+$('aiPolish').onclick=function(){
+  var t=$('prop').value.trim();if(!t)return;
+  ai('polish',t,this,'✨ با AI حرفه‌ای‌ترش کن',function(out){orig=t;$('prop').value=out;st.lock=true;$('aiUndo').hidden=false});
+};
+$('aiUndo').onclick=function(){if(orig)$('prop').value=orig;$('aiUndo').hidden=true};
+$('aiDefend').onclick=function(){
+  var c=calc();if(!(c.H>0&&c.rate>0))return;var t=c.T[st.tier];
+  var info='خدمت: '+($('service').value.trim()||'پروژه')+'\nتحویلی: '+($('deliv').value.trim()||'-')+'\nقیمت پیشنهادی: '+toman(t.price)+' (گزینه‌ی '+t.name+')\nکل زمان کار: '+faD(c.H)+' ساعت\nاصلاحات: '+fa(t.revs)+' بار\nتحویل: '+fa(t.days)+' روز کاری\nگزینه‌های دیگه: '+c.T.map(function(x){return x.name+' '+toman(x.price)}).join('، ');
+  ai('defend',info,this,'🛡 ۳ جواب آماده با AI',function(out){var o=$('defOut');o.textContent=out;o.hidden=false});
+};
 
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){fill(Object.assign({},BLANK,saved));st.tier=saved.tier==null?1:saved.tier;$('all3').checked=!!saved.all3;go(saved.step||1)}
