@@ -369,10 +369,13 @@ setTimeout(() => { if (!ready) { ready = true; draw(); } }, 3000);
 </script>
 <!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
 <style>
-:root{--line:#c3cfdc}
-@media(prefers-color-scheme:dark){html:not([data-theme=light]){--line:#3a4f6b}}
-html[data-theme=dark]{--line:#3a4f6b}
-html[data-theme=light]{--line:#c3cfdc}
+:root{--line:#b8c6d6}
+@media(prefers-color-scheme:dark){html:not([data-theme=light]){--line:#4a6382;--field:#16243a}}
+html[data-theme=dark]{--line:#4a6382;--field:#16243a}
+html[data-theme=light]{--line:#b8c6d6}
+input[type=text],input[type=number],input[type=time],input[type=date],select,textarea{border-width:1.5px!important}
+.big{grid-template-columns:repeat(auto-fit,minmax(13em,1fr))!important;row-gap:18px!important}
+.big b{font-size:clamp(24px,2.6vw,32px)!important;white-space:normal!important;overflow-wrap:anywhere}
 @media(max-width:420px){.ruler .mk{font-size:12px}}
 .jg-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px max(4vw,12px);background:#14233b;color:#fff;font:14px/1.4 Est,Vazirmatn,Tahoma,sans-serif;direction:rtl}
 .jg-bar a,.jg-bar button{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.12);border:0;border-radius:20px;padding:7px 14px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
@@ -400,9 +403,9 @@ html[data-theme=light]{--line:#c3cfdc}
     tg.BackButton.show(); tg.BackButton.onClick(function(){location.href='../index.html'});
     bar.querySelector('.jg-all').style.display='none';
     var can=tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0');
-    if(!can){btn.style.display='none'}
+    if(!can){btn.style.display='none';bar.style.display='none'}
     else{
-      tg.checkHomeScreenStatus(function(st){ if(st==='added'&&!fromCat)added(); if(st==='unsupported')btn.style.display='none'; });
+      tg.checkHomeScreenStatus(function(st){ if(st==='added'&&!fromCat)added(); if(st==='unsupported'){btn.style.display='none';bar.style.display='none'} });
       tg.onEvent('homeScreenAdded',added);
       btn.onclick=function(){
         // From the catalog we are inside the catalog app; open this tool's own app so the shortcut opens this tool.
