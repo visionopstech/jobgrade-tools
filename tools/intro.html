@@ -378,7 +378,7 @@ setTimeout(() => { if (!ready) { ready = true; draw(); } }, 3000);
 </style>
 <script>
 (function(){
-  var SLUG='intro', BOT='JobgradeBot';
+  var SLUG='intro', BOT='JobgradeBot', DIRECT=[]; // DIRECT: tools that have their own BotFather /newapp link
   var tg=window.Telegram&&Telegram.WebApp; var inTg=!!(tg&&tg.initData);
   var fromCat=false; try{fromCat=sessionStorage.getItem('jg_cat')==='1'}catch(e){}
   var bar=document.createElement('div'); bar.className='jg-bar';
@@ -400,7 +400,7 @@ setTimeout(() => { if (!ready) { ready = true; draw(); } }, 3000);
       tg.onEvent('homeScreenAdded',added);
       btn.onclick=function(){
         // From the catalog we are inside the catalog app; open this tool's own app so the shortcut opens this tool.
-        if(fromCat&&BOT){tg.openTelegramLink('https://t.me/'+BOT+'/'+SLUG+'?startapp=home');}
+        if(fromCat&&BOT&&DIRECT.indexOf(SLUG)>=0){tg.openTelegramLink('https://t.me/'+BOT+'/'+SLUG+'?startapp=home');}
         else tg.addToHomeScreen();
       };
       var sp=tg.initDataUnsafe&&tg.initDataUnsafe.start_param;
