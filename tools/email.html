@@ -393,5 +393,78 @@ input[type=text],input[type=number],input[type=time],input[type=date],select,tex
   }
 })();
 </script>
+<!-- Jobgrade sync: keeps each user's progress on Jobgrade's server (by Telegram account), so it survives other devices -->
+<style>
+.jg-note{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#eef3fa;color:#3b4b63;font:13px/1.6 Est,Vazirmatn,Tahoma,sans-serif;padding:6px max(4vw,12px);direction:rtl;border-bottom:1px solid #d8e2ef}
+.jg-note button{font:inherit;font-size:15px;background:none;border:0;color:inherit;cursor:pointer;padding:2px 8px;min-height:30px}
+@media(prefers-color-scheme:dark){html:not([data-theme=light]) .jg-note{background:#182740;color:#b9c6d8;border-color:#26385a}}
+html[data-theme=dark] .jg-note{background:#182740;color:#b9c6d8;border-color:#26385a}
+</style>
+<script>
+(function(){
+  var SLUG='email', API='https://jobgrade-ai.ali-jaccobi.workers.dev/sync';
+  function J(k){try{return JSON.parse(localStorage.getItem(k)||'null')||{}}catch(e){return {}}}
+  // which saved keys belong to each tool, and how far the user got (for the dashboard)
+  var CFG={
+    pricing:{keys:['jg-tool-001-v3','jg-rate-v1'],stage:function(){var d=J('jg-tool-001-v3'),r=J('jg-rate-v1'),s=d.step||1;
+      return {step:s,total:7,done:s>=7,info:{'خدمت':d.service||'','نوع':d.kind||'','نرخ ساعتی (هزار تومان)':r.rateK||''}}}},
+    email:{keys:['jg-tool-019-v1'],stage:function(){var d=J('jg-tool-019-v1'),s=d.step||1;
+      return {step:s,total:5,done:s>=5&&!!(d.vers&&d.vers.length),info:{'هدف':d.goal||'','رابطه':d.rel||''}}}},
+    aiguide:{keys:['jg-tool-020-v1'],stage:function(){var d=J('jg-tool-020-v1'),n=(d.done||[]).length;
+      return {step:n,total:9,done:n>=9,info:null}}},
+    english:{keys:['jg-tool-022-v1'],stage:function(){var P=J('jg-tool-022-v1').P||{},n=0,st=0;
+      Object.keys(P).forEach(function(k){if(P[k].s>=4)n++;st+=P[k].stars||0});
+      return {step:n,total:6,done:n>=6,info:{'ستاره':st}}}}
+  };
+  var c=CFG[SLUG], tg=window.Telegram&&Telegram.WebApp, init=tg&&tg.initData;
+  if(!c||!init)return; // outside Telegram: progress stays on this device only
+  var TS='jg-sync-'+SLUG, DIRTY='jg-dirty-'+SLUG, set=localStorage.setItem.bind(localStorage);
+  function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
+  // one short line so users know their progress is kept
+  if(!get('jg-note-ok')){
+    var n=document.createElement('div');n.className='jg-note';
+    n.innerHTML='<span>🔒 برای ذخیره‌ی پیشرفتت، اطلاعات استفاده‌ات پیش جاب‌گرید نگه داشته می‌شه.</span><button type="button" aria-label="بستن">✕</button>';
+    n.querySelector('button').onclick=function(){n.remove();try{set('jg-note-ok','1')}catch(e){}};
+    var bar=document.querySelector('.jg-bar');
+    if(bar&&bar.parentNode)bar.parentNode.insertBefore(n,bar.nextSibling);else document.body.insertBefore(n,document.body.firstChild);
+  }
+
+  function post(o,keep){
+    o.initData=init;o.tool=SLUG;var s=c.stage();o.step=s.step;o.total=s.total;o.done=s.done;o.info=s.info;
+    return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o),keepalive:!!keep}).then(function(r){return r.ok?r.json():null}).catch(function(){return null});
+  }
+  var timer=null, busy=false;
+  function push(keep){
+    clearTimeout(timer);timer=null;
+    if(!get(DIRTY))return;
+    var st={};c.keys.forEach(function(k){var v=get(k);if(v!=null)st[k]=v});
+    try{localStorage.removeItem(DIRTY)}catch(e){}
+    post({op:'save',state:st},keep).then(function(r){if(r&&r.ts){try{set(TS,String(r.ts))}catch(e){}}else{try{set(DIRTY,'1')}catch(e){}}});
+  }
+  // every save of this tool's keys is sent to the server a moment later
+  localStorage.setItem=function(k,v){
+    var old=get(k);set(k,v);
+    if(c.keys.indexOf(k)>=0&&old!==String(v)){try{set(DIRTY,'1')}catch(e){}clearTimeout(timer);timer=setTimeout(push,2000)}
+  };
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&timer)push(true)});
+  window.addEventListener('pagehide',function(){if(timer)push(true)});
+
+  post({op:'open'}).then(function(r){
+    if(!r)return;
+    var mine=+(get(TS)||0);
+    if(get(DIRTY)){push();return}              // unsent changes on this device win
+    if(r.state&&r.ts>mine){                     // newer progress from another device
+      var changed=false;
+      Object.keys(r.state).forEach(function(k){if(c.keys.indexOf(k)>=0&&get(k)!==r.state[k]){set(k,r.state[k]);changed=true}});
+      set(TS,String(r.ts));
+      var g='jg-reloaded-'+SLUG;
+      if(changed&&!sessionStorage.getItem(g)){try{sessionStorage.setItem(g,'1')}catch(e){}location.reload()}
+      return;
+    }
+    if(!r.state){var any=c.keys.some(function(k){return get(k)!=null});if(any){try{set(DIRTY,'1')}catch(e){}push()}}
+  });
+})();
+</script>
 </body>
 </html>
