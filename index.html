@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>جعبه ابزار جاب‌گرید</title>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<link rel="icon" href="assets/icon-192.png"><link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="theme-color" content="#14233b">
+<style>
+@font-face{font-family:Est;font-weight:400;src:url(assets/est-400.woff2) format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:700;src:url(assets/est-700.woff2) format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:900;src:url(assets/est-900.woff2) format("woff2");font-display:swap}
+:root{--bg:var(--tg-theme-bg-color,#ffffff);--ink:var(--tg-theme-text-color,#14233b);--mute:var(--tg-theme-hint-color,#5a6a80);--card:var(--tg-theme-secondary-bg-color,#f3f6fa);--accent:#f77f00;--navy:#14233b}
+@media(prefers-color-scheme:dark){:root{--bg:var(--tg-theme-bg-color,#0d1626);--ink:var(--tg-theme-text-color,#e8eef6);--mute:var(--tg-theme-hint-color,#9fb0c6);--card:var(--tg-theme-secondary-bg-color,#132036)}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 Est,Tahoma,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+.top{position:relative;color:#fff;padding:70px 16px 20px;background:linear-gradient(0deg,rgba(10,20,45,.95) 0%,rgba(10,20,45,.75) 60%,rgba(10,20,45,.3) 100%),url(assets/toolbox.jpg) center/cover #14233b}
+.top img{position:absolute;top:14px;right:16px;height:40px}
+.top .kick{display:inline-block;background:var(--accent);font-weight:900;font-size:13px;padding:3px 12px;border-radius:30px}
+.top h1{margin:8px 0 2px;font-size:26px;font-weight:900;line-height:1.3}
+.top p{margin:0;color:#dbe5f1;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;max-width:900px;margin:0 auto}
+@media(min-width:620px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.card{background:var(--card);border-radius:18px;padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;color:inherit;text-decoration:none;border:0;font:inherit;cursor:pointer;transition:transform .12s}
+.card:active{transform:scale(.97)}
+.emo{font-size:46px;line-height:1;width:76px;height:76px;display:grid;place-items:center;background:var(--bg);border-radius:50%}
+.lbl{font-size:12px;color:var(--accent);font-weight:700}
+.ttl{font-weight:900;font-size:15px;line-height:1.45}
+.dsc{font-size:12.5px;color:var(--mute);line-height:1.6;flex:1}
+.go{margin-top:4px;width:100%;background:var(--accent);color:#fff;font-weight:700;border-radius:12px;padding:9px 0}
+.soon{opacity:.7;cursor:default}
+.soon .go{background:transparent;color:var(--mute);border:1px dashed var(--mute)}
+.foot{text-align:center;color:var(--mute);font-size:13px;padding:4px 16px 28px}
+.foot a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="top">
+  <img src="assets/logo.png" alt="جاب‌گرید">
+  <span class="kick">🧰 جعبه ابزار شغلی</span>
+  <h1>ابزارهای جاب‌گرید</h1>
+  <p>هر ابزار رو بزن، همین‌جا ازش استفاده کن. اگه به کارت اومد، به صفحه‌ی گوشیت اضافه‌ش کن.</p>
+</header>
+<main class="grid" id="grid"></main>
+<p class="foot">هر هفته ابزار جدید اضافه می‌شه · <a href="https://t.me/jobgrademe" id="ch">کانال جاب‌گرید</a></p>
+<script>
+var TOOLS=[{"num": "001", "slug": "pricing", "title": "دستیار قیمت‌گذاری", "desc": "ساعت کار و هزینه‌هات رو بده، ۳ گزینه‌ی قیمت و متن پیشنهاد آماده بگیر.", "emoji": "💰", "label": "ابزار ۰۰۱"}, {"num": "002", "slug": "portfolio", "title": "پروژه‌ی قبلیت، مشتری بعدیت", "desc": "از یه کار قبلیت، پست ۵ اسلایدی نمونه‌کار برای اینستاگرام بساز.", "emoji": "🗂️", "label": "ابزار ۰۰۲"}, {"num": "003", "slug": "followup", "title": "مشتری جواب نداد؟ نقشه‌ی پیگیری بگیر", "desc": "۳ پیام پیگیری با تاریخ، دلیل و یادآور تقویم.", "emoji": "📨", "label": "ابزار ۰۰۳"}, {"num": "004", "slug": "dayplan", "title": "روزت رو در ۳ دقیقه بچین", "desc": "برنامه‌ی روز با قانون ۷۰٪ و ساعت خاموشی، به‌همراه عکس والپیپر.", "emoji": "🗓️", "label": "ابزار ۰۰۴"}, {"num": "005", "slug": "intro", "title": "معرفی‌ای که یادشون بمونه", "desc": "معرفی ۳۰ ثانیه‌ای، جمله‌ی ۱۰ ثانیه‌ای و بیو، با ردیاب کلیشه و تایمر تمرین.", "emoji": "🎤", "label": "ابزار ۰۰۵"}, {"num": "006", "slug": "brief", "title": "بریف ضد دوباره‌کاری", "desc": "سؤال‌های درست بپرس، جواب‌های خطرناک مشتری رو پیدا کن و خلاصه‌ی توافق بفرست.", "emoji": "📝", "label": "ابزار ۰۰۶"}];
+var tg=window.Telegram&&Telegram.WebApp, inTg=!!(tg&&tg.initData);
+try{sessionStorage.setItem('jg_cat','1')}catch(e){}
+var sp=inTg&&tg.initDataUnsafe.start_param, q=new URLSearchParams(location.search).get('tool');
+var jump=TOOLS.find(function(t){return t.slug===(sp||q)});
+if(jump){location.replace('tools/'+jump.slug+'.html')}
+var g=document.getElementById('grid');
+TOOLS.forEach(function(t){
+  var a=document.createElement('a'); a.className='card'; a.href='tools/'+t.slug+'.html';
+  a.innerHTML='<span class="emo">'+t.emoji+'</span><span class="lbl">'+t.label+'</span><span class="ttl"></span><span class="dsc"></span><span class="go">باز کن</span>';
+  a.querySelector('.ttl').textContent=t.title; a.querySelector('.dsc').textContent=t.desc;
+  if(inTg)a.addEventListener('click',function(){try{tg.HapticFeedback.impactOccurred('light')}catch(e){}});
+  g.appendChild(a);
+});
+var s=document.createElement('div'); s.className='card soon';
+s.innerHTML='<span class="emo">⏳</span><span class="lbl">به‌زودی</span><span class="ttl">ابزار بعدی</span><span class="dsc">ابزارهای جدید هر هفته توی کانال معرفی می‌شن.</span><span class="go">به‌زودی</span>';
+g.appendChild(s);
+if(inTg){
+  tg.ready(); tg.expand();
+  try{tg.setHeaderColor('#14233b')}catch(e){}
+  document.getElementById('ch').onclick=function(e){e.preventDefault();tg.openTelegramLink('https://t.me/jobgrademe')};
+}
+</script>
+</body>
+</html>

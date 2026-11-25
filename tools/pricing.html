@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دستیار قیمت‌گذاری جابگرید</title>
+<style>
+@font-face{font-family:Vazirmatn;src:url("fonts/Vazirmatn-wght.woff2") format("woff2");font-weight:100 900;font-display:swap}
+/* VOICE work tool, calm and exact, like a good accountant's quote sheet
+   IDEA a price ruler: where your price sits against your real cost
+   PICTURE a live scale from zero to the premium price, loss zone shaded, three tiers and your own price pinned on it
+   COLOUR JobGrade navy band, white sheet, teal for safe zone, orange for the chosen tier, red only for loss
+   TYPE Vazirmatn 800 for figures and titles, Vazirmatn 400 for text
+   LAYOUT laptop: inputs right, sticky live result left; phone: title, inputs, results, slim sticky price bar */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0d1626);--ink:light-dark(#14233b,#e8eef6);--mute:light-dark(#5a6a80,#9fb0c6);--line:light-dark(#dbe3ec,#24344d);--panel:light-dark(#f3f8f9,#132036);--navy:#14233b;--teal:light-dark(#178f99,#3fc1cb);--tealbg:light-dark(#dff2f3,#16384a);--orange:light-dark(#e47b10,#ff9a3c);--orangebg:light-dark(#fff1e3,#3a2614);--red:light-dark(#c8352b,#ff6b5e);--redbg:light-dark(#fbe7e5,#3a1a19);--field:light-dark(#ffffff,#0f1a2c)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Vazirmatn,Tahoma,"Segoe UI",sans-serif;overflow-x:clip}
+.top{background:var(--navy);color:#fff;padding:22px max(5vw,16px) 26px}
+.top .kick{font-size:14px;color:#9fd8dd;margin:0 0 4px}
+.top h1{font-size:clamp(30px,5vw,44px);line-height:1.15;margin:0;font-weight:800}
+.top p{margin:8px 0 0;color:#c9d6e6;max-width:60ch;font-size:15px}
+.wrap{max-width:1240px;margin:0 auto;padding:24px max(4vw,16px) 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start}
+.inputs{display:grid;gap:18px}
+fieldset{border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px;margin:0;background:var(--bg)}
+legend{font-weight:700;padding:0 6px;font-size:16px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:12px}
+label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+input[type=text],textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+input:focus-visible,textarea:focus-visible,button:focus-visible,.seg label:focus-within{outline:3px solid var(--teal);outline-offset:1px}
+.num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.unit{font-size:12.5px;color:var(--mute)}
+input[type=range]{width:100%;accent-color:var(--teal);height:44px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg label{flex:1 1 6em;display:block;position:relative}
+.seg input{position:absolute;opacity:0;inset:0}
+.seg span{display:block;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 8px;min-height:44px;color:var(--ink);cursor:pointer}
+.seg input:checked+span{background:var(--tealbg);border-color:var(--teal);font-weight:700}
+.hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+details{font-size:14px;color:var(--mute)}
+summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button{font:inherit;font-size:15px;border-radius:10px;min-height:44px;padding:8px 16px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+button.main{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
+.result{position:sticky;top:16px;display:grid;gap:16px}
+.card{background:var(--panel);border-radius:16px;padding:18px}
+.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(10em,1fr));gap:14px}
+.big div{display:grid}
+.big small{font-size:14px;color:var(--mute)}
+.big b{font-size:clamp(26px,3.6vw,36px);font-weight:800;line-height:1.2;white-space:nowrap}
+.big i{font-style:normal;font-size:13px;color:var(--mute)}
+.ruler{position:relative;height:118px;margin:14px 4px 2px}
+.track{position:absolute;inset-inline:0;top:52px;height:14px;border-radius:7px;background:var(--tealbg);overflow:hidden}
+.loss{position:absolute;inset-block:0;inset-inline-start:0;background:var(--redbg);border-inline-end:2px solid var(--red)}
+.mk{position:absolute;transform:translateX(50%);text-align:center;white-space:nowrap;font-size:13px;line-height:1.3}
+.mk.t{top:0}
+.mk.t .dot{width:14px;height:14px;border-radius:50%;background:var(--teal);margin:6px auto 0;border:2px solid var(--bg)}
+.mk.t.on .dot{background:var(--orange);width:18px;height:18px}
+.mk.t.on{font-weight:700}
+.mk.f{top:70px;color:var(--red)}
+.mk.p{top:70px;color:var(--ink);font-weight:700}
+.mk.p::before{content:"";display:block;width:2px;height:22px;background:var(--ink);margin:-22px auto 2px}
+.mk.p.low{top:92px}
+.mk.p.low::before{height:44px;margin-top:-44px}
+.alert{border-radius:12px;padding:12px 14px;font-size:15px;margin:0}
+.alert.bad{background:var(--redbg);color:var(--red)}
+.alert.warn{background:var(--orangebg);color:var(--orange)}
+.alert.ok{background:var(--tealbg);color:var(--teal)}
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tier{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg);cursor:pointer;text-align:start;display:grid;gap:4px;align-content:start}
+.tier.on{border:2px solid var(--orange);background:var(--orangebg)}
+.tier h3{margin:0;font-size:15px}
+.tier .pr{font-size:20px;font-weight:800;white-space:nowrap}
+.tier ul{margin:4px 0 0;padding-inline-start:16px;font-size:13px;color:var(--mute)}
+.tier .eff{font-size:12.5px;color:var(--mute)}
+h2{font-size:18px;margin:0 0 8px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td{padding:6px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:left;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
+textarea{min-height:250px;line-height:1.8;resize:vertical}
+.copyrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.copied{font-size:14px;color:var(--teal)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);min-height:44px}
+.chk input{width:20px;height:20px;accent-color:var(--orange)}
+.foot{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px) 90px;font-size:13.5px;color:var(--mute)}
+.sample{font-size:13px;color:var(--orange);margin:0}
+.bar{display:none}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.result{position:static}.bar{display:flex;position:fixed;inset-inline:0;bottom:0;background:var(--navy);color:#fff;padding:10px 16px;gap:16px;justify-content:space-between;font-size:14px;z-index:5}.bar b{font-size:16px;white-space:nowrap}}
+@media(max-width:560px){.tiers{grid-template-columns:minmax(0,1fr)}.ruler{margin-inline:18px}}
+@media(prefers-reduced-motion:no-preference){.mk,.loss{transition:inset-inline-start .35s ease,width .35s ease}}
+</style>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<link rel="manifest" href="pricing.webmanifest"><link rel="apple-touch-icon" href="../assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#14233b">
+</head>
+<body>
+<header class="top">
+  <p class="kick">جعبه ابزار شغلی جابگرید · ابزار ۰۰۱</p>
+  <h1>دستیار قیمت‌گذاری</h1>
+  <p>زمان، هزینه و درآمدی که می‌خوای رو وارد کن. کف قیمتت، سه گزینه‌ی قیمت و متن پیشنهاد آماده‌ی ارسال رو همین‌جا می‌گیری.</p>
+</header>
+
+<main class="wrap">
+<form class="inputs" id="f" autocomplete="off">
+  <p class="sample" id="sampleNote">عددهای فعلی نمونه‌ان: طراحی لوگو برای یک کافه.</p>
+  <fieldset>
+    <legend>پروژه</legend>
+    <div class="row">
+      <label>چه خدمتی؟<input type="text" id="service" placeholder="مثلاً طراحی لوگو"></label>
+      <label>اسم مشتری<input type="text" id="client" placeholder="اختیاری"></label>
+    </div>
+    <label style="margin-top:12px">دقیقاً چه چیزی تحویل می‌دی؟<input type="text" id="deliv" placeholder="مثلاً لوگو + راهنمای رنگ و فونت"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>چند ساعت کار می‌بره؟</legend>
+    <div class="row">
+      <label>جلسه و هماهنگی<input type="text" class="num" inputmode="decimal" id="hMeet"><span class="unit">ساعت</span></label>
+      <label>اجرا<input type="text" class="num" inputmode="decimal" id="hWork"><span class="unit">ساعت</span></label>
+      <label>اصلاحات<input type="text" class="num" inputmode="decimal" id="hRev"><span class="unit">ساعت</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>هزینه و درآمد</legend>
+    <div class="row">
+      <label>هزینه‌های مستقیم این پروژه<input type="text" class="num" inputmode="numeric" id="cost"><span class="unit">تومان · نرم‌افزار، فونت، رفت‌وآمد…</span></label>
+      <label>درآمد ماهانه‌ای که می‌خوای<input type="text" class="num" inputmode="numeric" id="income"><span class="unit">تومان در ماه</span></label>
+      <label>ساعت کارت در ماه<input type="text" class="num" inputmode="numeric" id="hMonth"><span class="unit">ساعت</span></label>
+    </div>
+    <label style="margin-top:12px">چند درصد از وقتت واقعاً فروخته می‌شه؟ <b id="billOut"></b>
+      <input type="range" id="bill" min="40" max="100" step="5">
+    </label>
+    <p class="hint">بقیه‌ی وقت صرف پیدا کردن مشتری، پیام‌ها و کارهای اداری می‌شه. برای بیشتر فریلنسرها ۶۰ تا ۷۵ درصده.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>این کار برای مشتری چقدر ارزش داره؟</legend>
+    <div class="seg" role="radiogroup">
+      <label><input type="radio" name="val" value="1" id="v1"><span>کم</span></label>
+      <label><input type="radio" name="val" value="1.1" id="v2"><span>متوسط</span></label>
+      <label><input type="radio" name="val" value="1.25" id="v3"><span>زیاد</span></label>
+    </div>
+    <p class="hint">مثلاً اگه کارت مستقیم فروش مشتری رو بالا می‌بره، ارزشش زیاده. این روی گزینه‌های استاندارد و ویژه اثر می‌ذاره.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>شرایط کار</legend>
+    <div class="row">
+      <label>اصلاحات داخل قیمت<input type="text" class="num" inputmode="numeric" id="revs"><span class="unit">بار</span></label>
+      <label>مهلت تحویل<input type="text" class="num" inputmode="numeric" id="days"><span class="unit">روز کاری</span></label>
+      <label>پیش‌پرداخت<input type="text" class="num" inputmode="numeric" id="pre"><span class="unit">درصد</span></label>
+      <label>اعتبار این قیمت<input type="text" class="num" inputmode="numeric" id="valid"><span class="unit">روز · به‌خاطر تورم مهمه</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>قیمتی که الان تو ذهنته</legend>
+    <label><input type="text" class="num" inputmode="numeric" id="mind" placeholder="اگه نمی‌دونی، خالی بذار"><span class="unit">تومان</span></label>
+    <details>
+      <summary>تنظیم حاشیه‌ی سود گزینه‌ها</summary>
+      <div class="row">
+        <label>پایه<input type="text" class="num" inputmode="numeric" id="mB"><span class="unit">درصد بالای کف</span></label>
+        <label>استاندارد<input type="text" class="num" inputmode="numeric" id="mS"><span class="unit">درصد بالای کف</span></label>
+        <label>ویژه<input type="text" class="num" inputmode="numeric" id="mP"><span class="unit">درصد بالای کف</span></label>
+      </div>
+    </details>
+  </fieldset>
+
+  <div class="btns">
+    <button type="button" id="clear">پاک کن، برای پروژه‌ی خودم</button>
+    <button type="button" id="demo">پر کردن نمونه</button>
+  </div>
+</form>
+
+<section class="result" aria-live="polite">
+  <div class="card">
+    <div class="big">
+      <div><small>کف قیمت این پروژه</small><b id="floorOut"></b><i>زیر این عدد، کمتر از درآمد هدفت می‌گیری</i></div>
+      <div><small>حداقل نرخ ساعتی تو</small><b id="rateOut"></b><i id="rateSub"></i></div>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <p class="alert" id="alert" hidden></p>
+  </div>
+
+  <div>
+    <h2>سه گزینه برای مشتری</h2>
+    <div class="tiers" id="tiers"></div>
+  </div>
+
+  <div class="card">
+    <h2>متن پیشنهاد قیمت</h2>
+    <label class="chk"><input type="checkbox" id="all3"> هر سه گزینه رو به مشتری پیشنهاد بده</label>
+    <textarea id="prop" aria-label="متن پیشنهاد قیمت"></textarea>
+    <div class="copyrow"><button type="button" class="main" id="copy">کپی متن</button><span class="copied" id="copied" hidden>کپی شد</span></div>
+  </div>
+
+  <details class="card">
+    <summary><b>محاسبه چطور انجام شد؟</b></summary>
+    <table><tbody id="calc"></tbody></table>
+  </details>
+</section>
+</main>
+
+<p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. قبل از ارسال، عددها رو یه بار خودت مرور کن. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن.</p>
+
+<div class="bar" id="bar"><span>کف: <b id="barF"></b></span><span>استاندارد: <b id="barS"></b></span></div>
+
+<script>
+{
+const $ = id => document.getElementById(id);
+const DEMO = {service:'طراحی لوگو',client:'کافه نارنج',deliv:'لوگو + راهنمای رنگ و فونت',hMeet:'3',hWork:'14',hRev:'5',cost:'500000',income:'40000000',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'10',pre:'50',valid:'7',mind:'5000000',mB:'15',mS:'35',mP:'70'};
+const BLANK = {service:'',client:'',deliv:'',hMeet:'',hWork:'',hRev:'',cost:'',income:'',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
+const TEXT = ['service','client','deliv'];
+const NUMS = ['hMeet','hWork','hRev','cost','income','hMonth','revs','days','pre','valid','mind','mB','mS','mP'];
+const KEY = 'jg-tool-001';
+let tier = 1;
+
+const toEn = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const num = id => { const v = parseFloat(toEn($(id).value).replace(/[,،٬\s]/g, '').replace('٫', '.')); return isFinite(v) ? v : 0; };
+const fa = n => Math.round(n).toLocaleString('fa-IR');
+const faD = n => n.toLocaleString('fa-IR', {maximumFractionDigits: 2});
+const toman = n => fa(n) + ' تومان';
+const short = n => n >= 1e6 ? (Math.round(n / 1e5) / 10).toLocaleString('fa-IR') + ' م' : fa(n / 1000) + ' هزار';
+const up = x => { const st = x >= 1e7 ? 1e5 : x >= 1e6 ? 5e4 : 1e4; return Math.ceil(x / st) * st; };
+const val = () => parseFloat(document.querySelector('input[name=val]:checked')?.value || '1');
+
+function fill(d){
+  for (const k of TEXT.concat(NUMS)) $(k).value = d[k] ?? '';
+  for (const k of NUMS) if ($(k).value) $(k).value = faD(num(k));
+  $('bill').value = d.bill;
+  const r = document.querySelector('input[name=val][value="' + d.val + '"]'); if (r) r.checked = true;
+}
+function save(){
+  const d = {}; for (const k of TEXT.concat(NUMS)) d[k] = $(k).value;
+  d.bill = $('bill').value; d.val = String(val()); d.tier = tier; d.all3 = $('all3').checked;
+  try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+}
+
+function calc(){
+  const H = num('hMeet') + num('hWork') + num('hRev');
+  const cost = num('cost'), inc = num('income'), hm = num('hMonth'), bill = +$('bill').value;
+  const sell = hm * bill / 100;
+  const rate = sell > 0 ? inc / sell : 0;
+  const floor = H * rate + cost;
+  const v = val(), revs = num('revs'), days = num('days');
+  const m = [num('mB'), num('mS'), num('mP')].map(x => x / 100);
+  const T = [
+    {name:'پایه', price: up(floor * (1 + m[0])), revs: Math.max(1, revs - 1), days: days, extra: 'دامنه‌ی کار دقیقاً همونی که توافق شده'},
+    {name:'استاندارد', price: up(floor * (1 + m[1]) * v), revs: revs, days: days, extra: 'پیشنهاد اصلی تو'},
+    {name:'ویژه', price: up(floor * (1 + m[2]) * v), revs: revs + 2, days: Math.max(1, Math.round(days * 0.7)), extra: 'پشتیبانی ۱۴ روزه بعد از تحویل'}
+  ];
+  T.forEach(t => t.eff = H > 0 ? (t.price - cost) / H : 0);
+  return {H, cost, inc, hm, bill, sell, rate, floor, v, T, mind: num('mind')};
+}
+
+function ruler(c){
+  const P = c.mind, max = Math.max(c.T[2].price, P) * 1.08 || 1;
+  const pos = x => Math.min(97, Math.max(3, x / max * 100));
+  let h = '<div class="track"><div class="loss" style="width:' + (c.floor / max * 100) + '%"></div></div>';
+  c.T.forEach((t, i) => { h += '<div class="mk t' + (i === tier ? ' on' : '') + '" style="inset-inline-start:' + pos(t.price) + '%">' + t.name + '<br>' + short(t.price) + '<div class="dot"></div></div>'; });
+  h += '<div class="mk f" style="inset-inline-start:' + pos(c.floor) + '%">کف ' + short(c.floor) + '</div>';
+  if (P > 0) { const near = Math.abs(pos(P) - pos(c.floor)) / 100 * ($('ruler').clientWidth || 600) < 110; h += '<div class="mk p' + (near ? ' low' : '') + '" style="inset-inline-start:' + pos(P) + '%">قیمت تو ' + short(P) + '</div>'; }
+  $('ruler').innerHTML = h;
+}
+
+function alertBox(c){
+  const a = $('alert'), P = c.mind;
+  if (!(P > 0) || !(c.floor > 0)) { a.hidden = true; return; }
+  a.hidden = false;
+  const effP = c.H > 0 ? (P - c.cost) / c.H : 0;
+  if (P <= c.cost) { a.className = 'alert bad'; a.textContent = 'این قیمت حتی هزینه‌های مستقیم پروژه رو پوشش نمی‌ده. با این عدد از جیبت می‌ذاری.'; }
+  else if (P < c.floor) { a.className = 'alert bad'; a.textContent = 'قیمتی که تو ذهنته ' + toman(c.floor - P) + ' زیر کف قیمتته. با این قیمت ساعتی ' + toman(effP) + ' درمیاری، در حالی که برای رسیدن به درآمد هدفت ساعتی ' + toman(c.rate) + ' لازم داری.'; }
+  else if (P < c.T[0].price) { a.className = 'alert warn'; a.textContent = 'قیمتت بالای کفه ولی حاشیه‌ی اطمینان نداره. اگه کار یه کم طول بکشه، از درآمد هدفت عقب می‌افتی.'; }
+  else { a.className = 'alert ok'; a.textContent = 'قیمتت در محدوده‌ی گزینه‌هاست و ساعتی ' + toman(effP) + ' برات درمیاره.'; }
+}
+
+function proposal(c){
+  const s = $('service').value.trim() || 'پروژه', cl = $('client').value.trim(), dv = $('deliv').value.trim();
+  const pre = num('pre'), valid = num('valid');
+  const line = t => '• ' + t.name + ': ' + toman(t.price) + ' · ' + fa(t.revs) + ' بار اصلاح · تحویل ' + fa(t.days) + ' روز کاری' + (t.name === 'ویژه' ? ' · ' + t.extra : '');
+  let x = 'سلام' + (cl ? ' ' + cl : '') + '،\nممنون از اعتمادتون. پیشنهاد قیمت ' + s + ' به این شرحه:\n\n';
+  if (dv) x += 'تحویلی: ' + dv + '\n';
+  if ($('all3').checked) x += '\n' + c.T.map(line).join('\n') + '\n';
+  else { const t = c.T[tier]; x += 'قیمت: ' + toman(t.price) + '\nاصلاحات: تا ' + fa(t.revs) + ' بار، در محدوده‌ی همین کار\nزمان تحویل: ' + fa(t.days) + ' روز کاری بعد از دریافت پیش‌پرداخت و اطلاعات لازم\n' + (t.name === 'ویژه' ? t.extra + '\n' : ''); }
+  x += '\nپرداخت: ' + fa(pre) + ' درصد پیش‌پرداخت و باقی هنگام تحویل.\nاصلاحات بیشتر یا تغییر در دامنه‌ی کار جداگانه قیمت‌گذاری می‌شه.\nاین قیمت تا ' + fa(valid) + ' روز معتبره.\n\nاگه سؤالی دارید خوشحال می‌شم صحبت کنیم.';
+  $('prop').value = x;
+}
+
+function render(){
+  const c = calc();
+  const ok = c.H > 0 && c.rate > 0;
+  $('billOut').textContent = fa(c.bill) + '٪';
+  $('floorOut').textContent = ok ? toman(c.floor) : '—';
+  $('rateOut').textContent = ok ? toman(c.rate) : '—';
+  $('rateSub').textContent = ok ? 'برای ' + faD(c.H) + ' ساعت کار این پروژه' : 'ساعت‌ها و درآمد رو وارد کن';
+  $('barF').textContent = ok ? short(c.floor) : '—';
+  $('barS').textContent = ok ? short(c.T[1].price) : '—';
+  if (!ok) { $('ruler').innerHTML = '<div class="track"></div>'; $('alert').hidden = true; $('tiers').innerHTML = ''; $('prop').value = ''; $('calc').innerHTML = ''; save(); return; }
+  ruler(c); alertBox(c);
+  $('tiers').innerHTML = c.T.map((t, i) => '<button type="button" class="tier' + (i === tier ? ' on' : '') + '" data-i="' + i + '" aria-pressed="' + (i === tier) + '"><h3>' + t.name + '</h3><span class="pr">' + toman(t.price) + '</span><span class="eff">ساعتی ' + toman(t.eff) + ' برای تو</span><ul><li>' + fa(t.revs) + ' بار اصلاح</li><li>تحویل ' + fa(t.days) + ' روز کاری</li><li>' + t.extra + '</li></ul></button>').join('');
+  const rows = [
+    ['ساعت قابل‌فروش در ماه', fa(c.hm) + ' × ' + fa(c.bill) + '٪ = ' + fa(c.sell) + ' ساعت'],
+    ['حداقل نرخ ساعتی', toman(c.inc) + ' ÷ ' + fa(c.sell) + ' = ' + toman(c.rate)],
+    ['کل ساعت پروژه', faD(c.H) + ' ساعت'],
+    ['کف قیمت', faD(c.H) + ' × ' + fa(c.rate) + ' + ' + fa(c.cost) + ' = ' + toman(c.floor)],
+    ['ضریب ارزش برای مشتری', '×' + c.v.toLocaleString('fa-IR')],
+    ['گزینه‌ها', 'کف + حاشیه، گرد شده به بالا']
+  ];
+  $('calc').innerHTML = rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('');
+  proposal(c); save();
+}
+
+$('f').addEventListener('input', () => { $('sampleNote').hidden = true; render(); });
+$('f').addEventListener('submit', e => e.preventDefault());
+$('all3').addEventListener('change', render);
+for (const k of NUMS) $(k).addEventListener('blur', () => { if ($(k).value.trim()) $(k).value = faD(num(k)); });
+$('tiers').addEventListener('click', e => { const b = e.target.closest('.tier'); if (!b) return; tier = +b.dataset.i; render(); });
+$('clear').addEventListener('click', () => { fill(BLANK); tier = 1; $('sampleNote').hidden = true; render(); $('service').focus(); });
+$('demo').addEventListener('click', () => { fill(DEMO); tier = 1; $('sampleNote').hidden = false; render(); });
+$('copy').addEventListener('click', async () => {
+  const t = $('prop'); let done = false;
+  try { await navigator.clipboard.writeText(t.value); done = true; } catch (e) { t.select(); try { done = document.execCommand('copy'); } catch (e2) {} }
+  $('copied').textContent = done ? 'کپی شد' : 'متن رو انتخاب کردم؛ با Ctrl+C یا لمس طولانی کپی کن';
+  $('copied').hidden = false; setTimeout(() => { $('copied').hidden = true; }, 2500);
+});
+
+let start = DEMO, saved = null;
+try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+if (saved) { start = Object.assign({}, BLANK, saved); tier = saved.tier ?? 1; $('all3').checked = !!saved.all3; $('sampleNote').hidden = true; }
+fill(start); render();
+}
+</script>
+<!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
+<style>
+.jg-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px max(4vw,12px);background:#14233b;color:#fff;font:14px/1.4 Est,Vazirmatn,Tahoma,sans-serif;direction:rtl}
+.jg-bar a,.jg-bar button{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.12);border:0;border-radius:20px;padding:7px 14px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.jg-bar button.jg-add{background:#f77f00;font-weight:700}
+.jg-bar button[disabled]{background:rgba(255,255,255,.12);font-weight:400;cursor:default}
+.jg-tip{display:none;background:#fff1e3;color:#14233b;font:14px/1.7 Est,Vazirmatn,Tahoma,sans-serif;padding:10px max(4vw,12px);direction:rtl;border-bottom:1px solid #f3c99b}
+.jg-tip.on{display:block}
+</style>
+<script>
+(function(){
+  var SLUG='pricing', BOT='JobgradeBot';
+  var tg=window.Telegram&&Telegram.WebApp; var inTg=!!(tg&&tg.initData);
+  var fromCat=false; try{fromCat=sessionStorage.getItem('jg_cat')==='1'}catch(e){}
+  var bar=document.createElement('div'); bar.className='jg-bar';
+  bar.innerHTML='<a href="../index.html" class="jg-all">🧰 همه‌ی ابزارها</a><button type="button" class="jg-add">📲 افزودن به صفحه‌ی گوشی</button>';
+  var tip=document.createElement('div'); tip.className='jg-tip';
+  document.body.insertBefore(tip,document.body.firstChild); document.body.insertBefore(bar,document.body.firstChild);
+  var btn=bar.querySelector('.jg-add');
+  function added(){btn.textContent='✓ روی صفحه‌ی گوشیت هست';btn.disabled=true}
+  function showTip(t){tip.innerHTML=t;tip.classList.add('on')}
+  if(inTg){
+    tg.ready(); tg.expand();
+    try{tg.setHeaderColor('#14233b');tg.setBackgroundColor('#ffffff')}catch(e){}
+    tg.BackButton.show(); tg.BackButton.onClick(function(){location.href='../index.html'});
+    bar.querySelector('.jg-all').style.display='none';
+    var can=tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0');
+    if(!can){btn.style.display='none'}
+    else{
+      tg.checkHomeScreenStatus(function(st){ if(st==='added'&&!fromCat)added(); if(st==='unsupported')btn.style.display='none'; });
+      tg.onEvent('homeScreenAdded',added);
+      btn.onclick=function(){
+        // From the catalog we are inside the catalog app; open this tool's own app so the shortcut opens this tool.
+        if(fromCat&&BOT){tg.openTelegramLink('https://t.me/'+BOT+'/'+SLUG+'?startapp=home');}
+        else tg.addToHomeScreen();
+      };
+      var sp=tg.initDataUnsafe&&tg.initDataUnsafe.start_param;
+      if(sp==='home'&&!fromCat)setTimeout(function(){tg.addToHomeScreen()},600);
+    }
+  }else{
+    var ev=null;
+    window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e});
+    if(window.matchMedia('(display-mode: standalone)').matches){bar.style.display='none'}
+    btn.onclick=function(){
+      if(ev){ev.prompt();ev=null;return}
+      var ios=/iPhone|iPad|iPod/.test(navigator.userAgent);
+      showTip(ios?'در Safari دکمه‌ی اشتراک‌گذاری (مربع با فلش رو به بالا) رو بزن، بعد «Add to Home Screen».'
+                 :'از منوی سه‌نقطه‌ی مرورگر، گزینه‌ی «Add to Home screen» یا «Install app» رو بزن.');
+    };
+  }
+})();
+</script>
+</body>
+</html>
