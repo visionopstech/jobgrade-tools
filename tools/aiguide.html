@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>دستیار هوشمند از صفر · جابگرید</title>
+<style>
+@font-face{font-family:Est;font-weight:400;src:url("../assets/est-400.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:700;src:url("../assets/est-700.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:900;src:url("../assets/est-900.woff2") format("woff2");font-display:swap}
+:root{--bg:#fbf6ee;--card:#ffffff;--ink:#1f2a37;--mute:#5b6675;--teal:#0f7f8a;--orange:#e36d00;--soft:#fdebd6;--ok:#2e8b57;--fs:24px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 var(--fs)/1.9 Est,Tahoma,sans-serif;min-height:100vh}
+body.big{--fs:29px}
+.app{max-width:560px;margin:0 auto;padding:14px 16px 150px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top .t{font-size:.7em;color:var(--mute)}
+.sz{font:inherit;font-size:.9em;min-height:52px;font-weight:900;color:var(--ink);background:#fff;border:2px solid #d9cbb8;border-radius:14px;padding:4px 14px;cursor:pointer}
+.dots{display:flex;gap:6px;margin:12px 0 0}
+.dots i{flex:1;height:12px;border-radius:6px;background:#e8dccb}
+.dots i.on{background:var(--teal)}
+.dots i.cur{background:var(--orange)}
+.num{display:inline-block;margin:22px 0 0;font-size:1em;font-weight:900;color:#fff;background:var(--teal);border-radius:16px;padding:4px 18px}
+.ln{display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:20px;padding:14px 16px;margin:14px 0 0;box-shadow:0 3px 12px rgba(80,50,10,.07)}
+.ln b.n{flex:none;width:48px;height:48px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.05em;font-weight:900;margin-top:2px}
+.ln span{flex:1}
+h1{margin:6px 0 0;font-size:1.55em;line-height:1.5;font-weight:900}
+.emo{font-size:2.4em;line-height:1.2;margin:14px 0 0}
+p{margin:14px 0 0}
+.card{background:var(--card);border-radius:22px;padding:6px 20px 18px;margin:18px 0 0;box-shadow:0 4px 18px rgba(80,50,10,.08)}
+.ready{margin:18px 0 0;background:var(--soft);border:2px dashed #e7b47c;border-radius:20px;padding:14px 16px}
+.ready small{display:block;font-size:.85em;color:#8a5a20;font-weight:700}
+.ready div{margin:6px 0 0;font-weight:700;line-height:1.9;font-size:1.05em}
+.cp{display:block;width:100%;margin:14px 0 0;font:inherit;font-size:1em;font-weight:900;color:#fff;background:var(--teal);border:0;border-radius:16px;min-height:72px;cursor:pointer}
+.cp.done{background:var(--ok)}
+.warn{margin:18px 0 0;background:#fff1ef;border-right:6px solid #d64534;border-radius:14px;padding:12px 16px;font-weight:700}
+.flags{margin:14px 0 0;padding:0;list-style:none}
+.flags li{background:#fff;border-radius:14px;padding:10px 14px;margin:8px 0 0;font-weight:700}
+.list{margin:18px 0 0;display:grid;gap:10px}
+.list button{display:flex;align-items:center;gap:12px;width:100%;text-align:right;font:inherit;font-size:1em;color:var(--ink);background:#fff;border:2px solid #eadfcf;border-radius:20px;padding:14px 16px;min-height:80px;cursor:pointer}
+.list button b{flex:none;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#efe5d6;font-size:1em}
+.list button.ok b{background:var(--ok);color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;padding:12px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--bg) 70%,rgba(251,246,238,0));display:flex;gap:10px;max-width:560px;margin:0 auto}
+.nav button{font:inherit;font-weight:900;border:0;border-radius:22px;min-height:84px;cursor:pointer}
+.nav .go{flex:1;font-size:1em;color:#fff;background:var(--orange)}
+.nav .bk{flex:.42;font-size:.95em;color:var(--ink);background:#ece2d3}
+.toast{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:#fff;border-radius:24px;padding:22px 30px;font-size:1.3em;font-weight:900;box-shadow:0 10px 40px rgba(0,0,0,.18);text-align:center;z-index:9;animation:pop .25s ease}
+@keyframes pop{from{transform:translate(-50%,-50%) scale(.8);opacity:0}}
+</style>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<link rel="manifest" href="aiguide.webmanifest"><link rel="apple-touch-icon" href="../assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#14233b">
+</head>
+<body>
+<div class="app">
+  <div class="top"><span class="t">جعبه ابزار جابگرید</span><button type="button" class="sz" id="sz">آ+ درشت‌تر</button></div>
+  <div class="dots" id="dots"></div>
+  <div id="view"></div>
+</div>
+<div class="nav"><button type="button" class="bk" id="bk">برگرد</button><button type="button" class="go" id="go"></button></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var KEY='jg-tool-020-v1';
+// each step: emoji, title, lines, ready sentences [{label,text,btn}], extra html
+var S=[
+ {e:'🤖',t:'دستیار هوشمند چیه؟',l:['یه برنامه‌ست توی گوشی که مثل یه آدم باحوصله، جواب سؤال‌هاتون رو می‌ده.','شما می‌نویسید یا حرف می‌زنید، اون جواب می‌ده.','هر چقدر بپرسید، نه خسته می‌شه، نه ناراحت.']},
+ {e:'📲',t:'برنامه رو آماده کنیم',l:['این قدم رو بهتره یکی از بچه‌ها یا نوه‌ها یه بار براتون انجام بده.','این پیام رو کپی کنید و براش بفرستید.','وقتی آماده شد، یه شکل جدید روی صفحه‌ی گوشیتون هست. فقط کافیه روش بزنید.'],
+  r:[{label:'پیام برای بچه‌ها',text:'سلام عزیزم، وقت کردی یه دستیار هوشمند (مثل ChatGPT یا Gemini) روی گوشیم نصب کن و برام واردش کن که خودم باهاش کار کنم. ممنونم 🌷',btn:'کپی کن تا برای بچه‌ها بفرستم'}]},
+ {e:'💬',t:'اولین سؤالتون',l:['برنامه رو باز کنید. پایین صفحه یه جای خالی برای نوشتن هست.','جمله‌ی پایین رو کپی کنید. بعد انگشتتون رو روی اون جای خالی نگه دارید تا کلمه‌ی «چسباندن» بیاد و روش بزنید.','آخر سر، دکمه‌ی فرستادن رو بزنید.'],
+  r:[{label:'جمله‌ی آماده',text:'سلام، من تازه دارم با تو آشنا می‌شم. خودت رو خیلی ساده و کوتاه معرفی کن.'}],
+  x:'<div class="card"><p><b>🎤 اگه نوشتن سخته:</b><br>کنار جای نوشتن، یه شکل میکروفون هست. روش بزنید و حرفتون رو بگید، مثل وقتی با تلفن حرف می‌زنید.</p></div>'},
+ {e:'🍳',t:'غذا با چیزهایی که توی یخچال دارید',l:['بگید توی یخچال چی دارید، تا یه غذا پیشنهاد بده.','مواد جمله‌ی پایین رو با چیزهای خودتون عوض کنید.'],
+  r:[{label:'جمله‌ی آماده',text:'توی یخچالم تخم‌مرغ، گوجه، سیب‌زمینی و پنیر دارم. یه غذای ساده‌ی ایرانی برای ناهار پیشنهاد بده و مرحله‌به‌مرحله بگو چطور درستش کنم.'}]},
+ {e:'💐',t:'پیام تبریک یا تسلیت',l:['برای فامیل و دوستان، یه پیام قشنگ بنویسید.','اسم‌ها رو با اسم آدم‌های خودتون عوض کنید.'],
+  r:[{label:'برای تبریک',text:'برای تولد خواهرزاده‌ام مریم یه پیام تبریک گرم و کوتاه بنویس.'},{label:'برای تسلیت',text:'برای تسلیت درگذشت پدر دوستم یه پیام محترمانه و کوتاه بنویس.'}],
+  x:'<div class="card"><p>اگه پیام رو دوست نداشتید، فقط بنویسید <b>«کوتاه‌ترش کن»</b> یا <b>«گرم‌ترش کن»</b>.</p></div>'},
+ {e:'🌿',t:'از یه چیز عکس بگیرید و بپرسید',l:['یه گیاه یا وسیله که نمی‌شناسید پیدا کنید.','توی برنامه، کنار جای نوشتن، یه علامت ➕ یا دوربین 📷 هست. روش بزنید و عکس بگیرید.','بعد این جمله رو بنویسید و بفرستید.'],
+  r:[{label:'جمله‌ی آماده',text:'این چیه؟ به زبان ساده بگو چطور ازش نگهداری کنم.'}]},
+ {e:'📄',t:'برگه‌ی آزمایش رو بفهمید',l:['از برگه‌ی آزمایش یا نسخه عکس بگیرید و بفرستید.','بعد این جمله رو بنویسید.'],
+  r:[{label:'جمله‌ی آماده',text:'این برگه‌ی آزمایش رو به زبان خیلی ساده برام توضیح بده. کدوم عددها از حد معمول بیرونن؟'}],
+  x:'<div class="warn">⚠️ دستیار هوشمند دکتر نیست. فقط برای اینه که بهتر بفهمید. تصمیم درمان همیشه با پزشکتونه.</div>'},
+ {e:'🛡️',t:'پیامک کلاهبرداری رو بشناسید',l:['اگه پیامکی اومد که گفته «جایزه بردید» یا «حسابتون مسدود می‌شه» و یه لینک داده، روی لینک نزنید.','متن پیامک رو کپی کنید و از دستیار هوشمند بپرسید.'],
+  r:[{label:'جمله‌ی آماده',text:'این پیامک برام اومده. کلاهبرداریه یا واقعیه؟ متن پیامک: '}],
+  x:'<div class="card"><p><b>نشونه‌های کلاهبرداری:</b></p><ul class="flags"><li>🚩 عجله داره: «همین الان»، «تا یک ساعت دیگه»</li><li>🚩 رمز یا کد پیامک رو می‌خواد</li><li>🚩 یه لینک عجیب داره</li></ul><p>هیچ بانک و اداره‌ای رمز شما رو نمی‌پرسه.</p></div>'},
+ {e:'🔑',t:'رمز یه سؤال خوب: سه تا تیکه',l:['<b>چی می‌خواید؟</b><br>مثلاً یه دستور پخت','<b>برای چی یا برای کی؟</b><br>مثلاً شام دو نفر','<b>چطوری؟</b><br>مثلاً ساده و مرحله‌به‌مرحله'],
+  r:[{label:'نمونه',text:'یه دستور پخت ساده برای شام دو نفر بگو، مرحله‌به‌مرحله و با کلمه‌های ساده.'}],
+  x:'<div class="card"><p><b>جادوی همیشگی ✨</b><br>هر جا جواب رو نفهمیدید، فقط بنویسید:<br><b>«ساده‌تر بگو.»</b></p></div>'}
+];
+var PRAISE=['عالی بود! 👏','آفرین! 🌟','خیلی خوب پیش می‌رید! 🌷','دست‌مریزاد! 👌','همین‌طور ادامه بدید! 💪'];
+var st={at:-1,done:[],big:false};
+try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function fa(n){return n.toLocaleString('fa-IR')}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function home(){
+  var n=st.done.length,started=n>0;
+  return '<div class="emo">🌷</div><h1>'+(started?'خوش برگشتید!':'سلام! خوش اومدید')+'</h1>'+
+   '<p>با هم، قدم‌به‌قدم یاد می‌گیریم با «دستیار هوشمند» حرف بزنید.</p>'+
+   '<p><b>نگران نباشید، اینجا هیچ‌چیز خراب نمی‌شه.</b> هر وقت خسته شدید، بعداً از همون‌جا ادامه می‌دید.</p>'+
+   '<div class="list">'+S.map(function(s,i){var ok=st.done.indexOf(i)>=0;return '<button type="button" data-go="'+i+'" class="'+(ok?'ok':'')+'"><b>'+(ok?'✓':fa(i+1))+'</b>'+s.t+'</button>'}).join('')+'</div>';
+}
+function step(i){
+  var s=S[i];
+  return '<div class="num">قدم '+fa(i+1)+' از '+fa(S.length)+'</div><div class="emo">'+s.e+'</div><h1>'+s.t+'</h1>'+
+   (s.l.length>1?s.l.map(function(x,k){return '<div class="ln"><b class="n">'+fa(k+1)+'</b><span>'+x+'</span></div>'}).join(''):'<p>'+s.l[0]+'</p>')+
+   (s.r||[]).map(function(r,k){return '<div class="ready"><small>'+r.label+'</small><div>'+esc(r.text)+'</div><button type="button" class="cp" data-cp="'+i+'-'+k+'">'+(r.btn||'📋 کپی کن')+'</button></div>'}).join('')+
+   (s.x||'');
+}
+function end(){
+  return '<div class="emo">🎉</div><h1>آفرین! همه‌ی قدم‌ها رو تموم کردید</h1>'+
+   '<p>حالا هر سؤالی داشتید، از دستیار هوشمندتون بپرسید: آشپزی، پیام، گیاه، هر چیزی.</p>'+
+   '<div class="card"><p>یادتون باشه:<br><b>«ساده‌تر بگو»</b> همیشه کار می‌کنه.<br>و برای کارهای پزشکی و پولی، همیشه با یه آدم مطمئن هم مشورت کنید.</p></div>';
+}
+function draw(){
+  document.body.classList.toggle('big',!!st.big);$('sz').textContent=st.big?'آ− معمولی':'آ+ درشت‌تر';
+  $('dots').innerHTML=S.map(function(_,i){return '<i class="'+(i===st.at?'cur':st.done.indexOf(i)>=0?'on':'')+'"></i>'}).join('');
+  var a=st.at;
+  if(a<0){$('view').innerHTML=home();$('go').textContent=st.done.length?'ادامه بدیم ←':'شروع کنیم ←';$('bk').hidden=true}
+  else if(a>=S.length){$('view').innerHTML=end();$('go').textContent='برگرد به فهرست قدم‌ها';$('bk').hidden=true}
+  else{$('view').innerHTML=step(a);$('go').textContent=a===S.length-1?'انجام دادم ✓ تموم!':'انجام دادم ✓ برو بعدی';$('bk').hidden=false}
+  window.scrollTo(0,0);save();
+}
+function praise(){var t=$('toast');t.textContent=PRAISE[Math.floor(Math.random()*PRAISE.length)];t.hidden=false;clearTimeout(praise.h);praise.h=setTimeout(function(){t.hidden=true},1100)}
+$('go').onclick=function(){
+  if(st.at<0){var next=0;while(st.done.indexOf(next)>=0&&next<S.length)next++;st.at=next>=S.length?0:next;draw();return}
+  if(st.at>=S.length){st.at=-1;draw();return}
+  if(st.done.indexOf(st.at)<0)st.done.push(st.at);praise();st.at++;draw();
+};
+$('bk').onclick=function(){st.at=st.at<=0?-1:st.at-1;draw()};
+$('sz').onclick=function(){st.big=!st.big;draw()};
+$('view').addEventListener('click',function(e){
+  var g=e.target.closest('[data-go]');if(g){st.at=+g.dataset.go;draw();return}
+  var c=e.target.closest('[data-cp]');if(!c)return;var p=c.dataset.cp.split('-'),txt=S[+p[0]].r[+p[1]].text,label=c.textContent;
+  function ok(y){c.textContent=y?'✓ کپی شد':'نشد؛ انگشتتون رو روی متن نگه دارید';c.classList.toggle('done',y);setTimeout(function(){c.textContent=label;c.classList.remove('done')},2200)}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){ok(true)},function(){ok(false)});
+  else{var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();var y=false;try{y=document.execCommand('copy')}catch(x){}a.remove();ok(y)}
+});
+draw();
+})();
+</script>
+<!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
+<style>
+:root{--line:#b8c6d6}
+@media(prefers-color-scheme:dark){html:not([data-theme=light]){--line:#4a6382;--field:#16243a}}
+html[data-theme=dark]{--line:#4a6382;--field:#16243a}
+html[data-theme=light]{--line:#b8c6d6}
+input[type=text],input[type=number],input[type=time],input[type=date],select,textarea{border-width:1.5px!important}
+.big{grid-template-columns:repeat(auto-fit,minmax(13em,1fr))!important;row-gap:18px!important}
+.big b{font-size:clamp(24px,2.6vw,32px)!important;white-space:normal!important;overflow-wrap:anywhere}
+@media(max-width:420px){.ruler .mk{font-size:12px}}
+.jg-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px max(4vw,12px);background:#14233b;color:#fff;font:14px/1.4 Est,Vazirmatn,Tahoma,sans-serif;direction:rtl}
+.jg-bar a,.jg-bar button{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.12);border:0;border-radius:20px;padding:7px 14px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.jg-bar button.jg-add{background:#f77f00;font-weight:700}
+.jg-bar button[disabled]{background:rgba(255,255,255,.12);font-weight:400;cursor:default}
+.jg-tip{display:none;background:#fff1e3;color:#14233b;font:14px/1.7 Est,Vazirmatn,Tahoma,sans-serif;padding:10px max(4vw,12px);direction:rtl;border-bottom:1px solid #f3c99b}
+.jg-tip.on{display:block}
+</style>
+<script>
+(function(){
+  var SLUG='aiguide', BOT='JobgradeBot', DIRECT=[]; // DIRECT: tools that have their own BotFather /newapp link
+  var tg=window.Telegram&&Telegram.WebApp; var inTg=!!(tg&&tg.initData);
+  var fromCat=false; try{fromCat=sessionStorage.getItem('jg_cat')==='1'}catch(e){}
+  var bar=document.createElement('div'); bar.className='jg-bar';
+  bar.innerHTML='<a href="../index.html" class="jg-all">🧰 همه‌ی ابزارها</a><button type="button" class="jg-add">📲 افزودن به صفحه‌ی گوشی</button>';
+  var tip=document.createElement('div'); tip.className='jg-tip';
+  document.body.insertBefore(tip,document.body.firstChild); document.body.insertBefore(bar,document.body.firstChild);
+  var btn=bar.querySelector('.jg-add');
+  function added(){btn.textContent='✓ روی صفحه‌ی گوشیت هست';btn.disabled=true}
+  function showTip(t){tip.innerHTML=t;tip.classList.add('on')}
+  if(inTg){
+    tg.ready(); tg.expand();
+    var de=document.documentElement; if(!de.dataset.theme&&tg.colorScheme)de.dataset.theme=tg.colorScheme;
+    try{tg.setHeaderColor('#14233b');tg.setBackgroundColor('#ffffff')}catch(e){}
+    tg.BackButton.show(); tg.BackButton.onClick(function(){location.href='../index.html'});
+    bar.querySelector('.jg-all').style.display='none';
+    var can=tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0');
+    if(!can){btn.style.display='none';bar.style.display='none'}
+    else{
+      tg.checkHomeScreenStatus(function(st){ if(st==='added'&&!fromCat)added(); if(st==='unsupported'){btn.style.display='none';bar.style.display='none'} });
+      tg.onEvent('homeScreenAdded',added);
+      btn.onclick=function(){
+        // From the catalog we are inside the catalog app; open this tool's own app so the shortcut opens this tool.
+        if(fromCat&&BOT&&DIRECT.indexOf(SLUG)>=0){tg.openTelegramLink('https://t.me/'+BOT+'/'+SLUG+'?startapp=home');}
+        else tg.addToHomeScreen();
+      };
+      var sp=tg.initDataUnsafe&&tg.initDataUnsafe.start_param;
+      if(sp==='home'&&!fromCat)setTimeout(function(){tg.addToHomeScreen()},600);
+    }
+  }else{
+    var ev=null;
+    window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e});
+    if(window.matchMedia('(display-mode: standalone)').matches){bar.style.display='none'}
+    btn.onclick=function(){
+      if(ev){ev.prompt();ev=null;return}
+      var ios=/iPhone|iPad|iPod/.test(navigator.userAgent);
+      showTip(ios?'در Safari دکمه‌ی اشتراک‌گذاری (مربع با فلش رو به بالا) رو بزن، بعد «Add to Home Screen».'
+                 :'از منوی سه‌نقطه‌ی مرورگر، گزینه‌ی «Add to Home screen» یا «Install app» رو بزن.');
+    };
+  }
+})();
+</script>
+</body>
+</html>
