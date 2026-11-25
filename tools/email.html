@@ -311,7 +311,8 @@ function show(){
   $('vers').innerHTML=st.vers.map(function(x,i){return '<button type="button" data-i="'+i+'" class="'+(i===st.cur?'on':'')+'">نسخه‌ی '+fa(i+1)+'<small>'+esc(x.name||'')+'</small></button>'}).join('');
   $('subj').textContent=v.subject||'';$('body').value=v.body||'';grow();
   $('mail').classList.toggle('ltr',st.lang==='en');
-  var w=(v.why||[]).filter(Boolean);$('why').hidden=!w.length;$('why').innerHTML='<b>چرا این ایمیل جواب می‌گیره؟</b>'+w.map(function(s){return '• '+esc(s)}).join('<br>');
+  var WHY=[['درخواست همون اول و روشن گفته شده','جواب دادنش فقط یه بله یا یه زمان می‌خواد'],['اول چیزی گفته که به درد گیرنده می‌خوره','درخواست بعد از ارزش میاد، پس کمتر حس فروش می‌ده'],['کوتاهه و توی گوشی یه‌نفس خونده می‌شه','جواب دادنش کمتر از یه دقیقه وقت می‌گیره']];
+  var w=(v.why||[]).filter(Boolean);if(!w.length&&!st.off)w=WHY[st.cur]||[];$('why').hidden=!w.length;$('why').innerHTML='<b>چرا این ایمیل جواب می‌گیره؟</b>'+w.map(function(s){return '• '+esc(s)}).join('<br>');
   $('mailto').href='mailto:?subject='+encodeURIComponent(v.subject||'')+'&body='+encodeURIComponent($('body').value);
 }
 $('body').addEventListener('input',function(){grow();var v=st.vers[st.cur];if(v){v.body=this.value;$('mailto').href='mailto:?subject='+encodeURIComponent(v.subject||'')+'&body='+encodeURIComponent(v.body);save()}});

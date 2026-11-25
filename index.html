@@ -51,10 +51,10 @@ var tg=window.Telegram&&Telegram.WebApp, inTg=!!(tg&&tg.initData);
 try{sessionStorage.setItem('jg_cat','1')}catch(e){}
 var sp=inTg&&tg.initDataUnsafe.start_param, q=new URLSearchParams(location.search).get('tool');
 var jump=TOOLS.find(function(t){return t.slug===(sp||q)});
-if(jump){location.replace('tools/'+jump.slug+'.html?v=11251250')}
+if(jump){location.replace('tools/'+jump.slug+'.html?v=11251300')}
 var g=document.getElementById('grid');
 TOOLS.forEach(function(t){
-  var a=document.createElement('a'); a.className='card'; a.href='tools/'+t.slug+'.html?v=11251250';
+  var a=document.createElement('a'); a.className='card'; a.href='tools/'+t.slug+'.html?v=11251300';
   a.innerHTML='<span class="emo">'+t.emoji+'</span><span class="lbl">'+t.label+'</span><span class="ttl"></span><span class="dsc"></span><span class="go">باز کن</span>';
   a.querySelector('.ttl').textContent=t.title; a.querySelector('.dsc').textContent=t.desc;
   if(inTg)a.addEventListener('click',function(){try{tg.HapticFeedback.impactOccurred('light')}catch(e){}});
