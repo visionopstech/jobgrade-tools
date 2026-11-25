@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>انگلیسی کاری · جابگرید</title>
+<style>
+@font-face{font-family:Est;font-weight:400;src:url("../assets/est-400.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:700;src:url("../assets/est-700.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:900;src:url("../assets/est-900.woff2") format("woff2");font-display:swap}
+:root{--ink:#ffffff;--mute:#a9bccd;--teal:#3fc1cb;--orange:#f77f00;--red:#ff6b5e;--glass:rgba(255,255,255,.07);--glass2:rgba(255,255,255,.14);--ln:rgba(255,255,255,.22)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{color:var(--ink);font:16px/1.6 Est,Tahoma,"Segoe UI",sans-serif;background:#0b1424;background-image:radial-gradient(circle at 30% 0%,#1f6f7a 0%,#14233b 50%,#0b1424 100%);background-attachment:fixed;min-height:100vh}
+.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:14px 20px 0}
+.head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mute)}
+.head b{color:#fff;font-size:14px}
+.prog{display:flex;gap:6px;margin:12px 0 0}
+.prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.16);transition:background .25s}
+.prog i.on{background:var(--teal)}
+.screen{display:none;flex:1;flex-direction:column;padding-bottom:110px;animation:in .25s ease}
+.screen.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.step{margin:24px 0 0;font-size:13px;color:#8fd3da}
+.q{margin:4px 0 0;font-size:26px;font-weight:900;line-height:1.4}
+.sub{margin:8px 0 0;color:var(--mute);font-size:14px}
+.bignum{margin:30px 0 0;text-align:center}
+.bignum input{all:unset;width:100%;text-align:center;font:900 64px/1.1 Est,Tahoma,sans-serif;color:#fff;caret-color:var(--teal)}
+.bignum span{display:block;color:var(--mute);font-size:15px;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 0;justify-content:center}
+.chips button{font:inherit;font-size:15px;color:#fff;min-width:58px;padding:11px 16px;border-radius:30px;background:var(--glass);border:1px solid var(--ln);cursor:pointer}
+.chips button.on{background:var(--teal);color:#0b1424;font-weight:900;border-color:var(--teal)}
+.fields{display:grid;gap:14px;margin:24px 0 0}
+.fld{display:grid;gap:6px;font-size:14px;color:var(--mute)}
+.fld input{font:inherit;font-size:17px;color:#fff;background:var(--glass);border:1.5px solid var(--ln);border-radius:14px;padding:12px 14px;min-height:50px;width:100%;outline:none}
+.fld input:focus{border-color:var(--teal);background:rgba(63,193,203,.08)}
+.fld input::placeholder{color:#6f8399}
+.fld small{font-size:12.5px;color:#7f93a8}
+.stp{display:flex;align-items:center;justify-content:space-between;background:var(--glass);border:1px solid var(--ln);border-radius:16px;padding:10px 12px 10px 14px;margin-top:12px}
+.stp .l{font-size:15px}.stp .l small{display:block;color:#7f93a8;font-size:12.5px}
+.stp .c{display:flex;align-items:center;gap:6px}
+.stp button{width:42px;height:42px;border-radius:50%;border:0;background:var(--glass2);color:#fff;font:900 22px/1 Est,Tahoma;cursor:pointer}
+.stp input{all:unset;width:64px;text-align:center;font:900 22px Est,Tahoma;color:#fff}
+.seg{display:flex;gap:8px;margin-top:10px;background:var(--glass);border-radius:16px;padding:5px}
+.seg button{flex:1;font:inherit;font-size:15px;color:#fff;background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
+.seg button.on{background:#fff;color:#14233b;font-weight:900}
+.lbl{margin:26px 0 0;font-size:15px;font-weight:700}
+.hint{font-size:13px;color:#7f93a8;margin:8px 0 0}
+details.more{margin-top:18px;background:var(--glass);border-radius:16px;padding:4px 14px}
+details.more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;color:var(--mute)}
+details.more[open]{padding-bottom:14px}
+input[type=range]{width:100%;accent-color:var(--teal);height:36px}
+.nav{position:fixed;bottom:0;left:0;right:0;padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(0deg,#0b1424 60%,rgba(11,20,36,0));display:flex;gap:10px;max-width:520px;margin:0 auto}
+.nav button{font:inherit;font-weight:900;font-size:16px;border:0;border-radius:16px;padding:16px;cursor:pointer;color:#fff}
+.nav .back{flex:.45;background:#22324a}
+.nav .next{flex:1;background:var(--orange)}
+.nav button[disabled]{opacity:.45}
+.gauge{margin:14px auto 0;width:280px;max-width:100%;position:relative}
+.gauge svg{display:block;width:100%;height:auto}
+.gauge .v{position:absolute;bottom:2px;left:0;right:0;text-align:center}
+.gauge .v b{font-size:36px;font-weight:900;display:block;line-height:1.15}
+.gauge .v span{font-size:13px;color:var(--mute)}
+.legend{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--mute);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:5px;vertical-align:-1px}
+.tabs{display:flex;margin:18px 0 0;background:var(--glass);border-radius:16px;padding:5px}
+.tabs button{flex:1;font:inherit;font-size:14px;color:#fff;background:transparent;border:0;border-radius:12px;padding:10px 4px;cursor:pointer;line-height:1.4}
+.tabs button small{display:block;font-size:12px;color:var(--mute)}
+.tabs button.on{background:#fff;color:#14233b;font-weight:900}
+.tabs button.on small{color:#5a6a80}
+.kv{margin:14px 0 0;border-radius:18px;background:var(--glass);padding:4px 16px}
+.kv div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px}
+.kv div:last-child{border:0}
+.kv b{color:var(--teal);white-space:nowrap}
+.alert{margin:14px 0 0;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.8}
+.alert.bad{background:rgba(255,107,94,.14);color:#ffb3ab;border:1px solid rgba(255,107,94,.35)}
+.alert.warn{background:rgba(247,127,0,.14);color:#ffc98f;border:1px solid rgba(247,127,0,.35)}
+.alert.ok{background:rgba(63,193,203,.12);color:#9fe6ec;border:1px solid rgba(63,193,203,.35)}
+.prop{margin:16px 0 0;background:var(--glass);border-radius:18px;padding:14px}
+.prop h3{margin:0 0 6px;font-size:15px}
+.prop textarea{width:100%;min-height:230px;font:inherit;font-size:14.5px;line-height:1.9;color:#fff;background:rgba(0,0,0,.18);border:1px solid var(--ln);border-radius:12px;padding:12px;resize:vertical}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
+.chk input{width:20px;height:20px;accent-color:var(--orange)}
+.copied{font-size:13.5px;color:var(--teal);text-align:center;margin-top:8px}
+.newp{font:inherit;font-size:13px;color:#fff;background:var(--glass2);border:1px solid var(--ln);border-radius:20px;padding:6px 14px;cursor:pointer}
+.aibtn{display:block;width:100%;margin:10px 0 0;font:inherit;font-weight:700;font-size:14.5px;color:#fff;background:linear-gradient(135deg,#7b5cff,#3fc1cb);border:0;border-radius:14px;padding:12px;cursor:pointer}
+.aibtn:disabled{opacity:.6;cursor:wait}
+.aibtn.ghost{background:transparent;border:1.5px solid #7b5cff;color:#cfc3ff}
+.aimsg{font-size:13px;color:#9fb0c2;text-align:center;margin:8px 0 0;line-height:1.7}
+.aiout{margin:10px 0 0;white-space:pre-wrap;font-size:14.5px;line-height:1.9;background:rgba(0,0,0,.18);border:1px solid var(--ln);border-radius:12px;padding:12px}
+.newbig{display:block;width:100%;margin:18px 0 0;font:inherit;font-weight:700;font-size:15px;color:#fff;background:transparent;border:1.5px dashed var(--ln);border-radius:16px;padding:14px;cursor:pointer}
+.foot{font-size:12.5px;color:#7f93a8;margin:18px 0 0;line-height:1.8}
+.calc td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.calc td:last-child{text-align:left;white-space:nowrap}
+.calc{width:100%;border-collapse:collapse}
+</style>
+<style>
+.kinds{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.kinds button{font:inherit;font-size:14px;color:#fff;padding:9px 14px;border-radius:30px;background:var(--glass);border:1px solid var(--ln);cursor:pointer}
+.kinds button.on{background:var(--teal);color:#0b1424;font-weight:900;border-color:var(--teal)}
+.fld textarea{font:inherit;font-size:16px;color:#fff;background:var(--glass);border:1.5px solid var(--ln);border-radius:14px;padding:12px 14px;min-height:84px;width:100%;outline:none;resize:vertical;line-height:1.8}
+.fld textarea:focus{border-color:var(--teal)}
+.fld textarea::placeholder{color:#6f8399}
+.tasks{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:18px 0 0}
+.task{display:flex;align-items:center;gap:6px;background:var(--glass);border:1px solid var(--ln);border-radius:14px;padding:6px 8px 6px 6px}
+.task .tn{all:unset;flex:1;min-width:0;font-size:15px;color:#fff;padding:6px 4px}
+.task .th{all:unset;width:44px;text-align:center;font:900 18px Est,Tahoma;color:#fff}
+.task .tb{width:34px;height:34px;border-radius:50%;border:0;background:var(--glass2);color:#fff;font:900 18px/1 Est,Tahoma;cursor:pointer;flex:none}
+.task .tx{width:28px;height:28px;border:0;background:transparent;color:#7f93a8;font-size:16px;cursor:pointer;flex:none}
+.task small{font-size:11px;color:#7f93a8;margin-right:-2px}
+.addt{font:inherit;font-size:14px;color:var(--teal);background:transparent;border:1.5px dashed var(--ln);border-radius:14px;padding:10px;cursor:pointer;margin-top:8px;width:100%}
+.total{display:flex;justify-content:space-between;align-items:center;margin:14px 0 0;padding:12px 16px;border-radius:14px;background:rgba(63,193,203,.12);border:1px solid rgba(63,193,203,.35);font-size:15px}
+.total b{font-size:20px;color:#9fe6ec}
+.gaps{margin:12px 0 0;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.8;background:rgba(247,127,0,.12);color:#ffd2a1;border:1px solid rgba(247,127,0,.35)}
+.gaps b{display:block;margin-bottom:4px}
+.why{margin:16px 0 0;border-radius:16px;padding:14px 16px;background:var(--glass);font-size:14px;line-height:1.9;color:#d5e2ee}
+.why b{color:#fff}
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;margin:22px 0 0;font-size:15px}
+.flow span{background:var(--glass);border-radius:12px;padding:10px 12px;text-align:center;line-height:1.4}
+.flow span b{display:block;font-size:20px}
+.flow .ar{background:none;padding:0;color:var(--mute);font-size:20px}
+.link{all:unset;cursor:pointer;color:var(--teal);font-size:14px;text-decoration:underline;text-underline-offset:4px;margin:16px auto 0;display:block;text-align:center}
+.helper{margin:14px 0 0;background:var(--glass);border-radius:16px;padding:14px}
+.helper .fields{margin-top:6px}
+.okbtn{display:block;width:100%;margin:12px 0 0;font:inherit;font-weight:700;font-size:15px;color:#0b1424;background:var(--teal);border:0;border-radius:14px;padding:12px;cursor:pointer}
+.yn{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--glass);border:1px solid var(--ln);border-radius:16px;padding:10px 12px 10px 14px;margin-top:10px;font-size:14.5px;line-height:1.6}
+.yn .b{display:flex;gap:4px;flex:none;background:rgba(0,0,0,.2);border-radius:12px;padding:3px}
+.yn button{font:inherit;font-size:14px;color:#fff;background:transparent;border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+.yn button.on{background:#fff;color:#14233b;font-weight:900}
+.mult{margin:14px 0 0;text-align:center;font-size:14px;color:var(--mute)}
+.mult b{color:#fff;font-size:18px}
+.mkt{margin:16px 0 0;background:var(--glass);border-radius:18px;padding:14px 16px}
+.mkt h3{margin:0 0 4px;font-size:15px}
+[hidden]{display:none!important}
+.rul{direction:ltr;position:relative;height:46px;margin:22px 6px 6px}
+.rul .bar{position:absolute;top:20px;left:0;right:0;height:8px;border-radius:4px;background:#3fc1cb}
+.rul .red{position:absolute;top:20px;left:0;height:8px;border-radius:4px;background:#ff6b5e}
+.rul i{position:absolute;top:14px;width:20px;height:20px;margin-left:-10px;border-radius:50%;border:2px solid #fff}
+.rul i.c{background:#8a9bb0;width:14px;height:14px;top:17px;margin-left:-7px}
+.rul i.me{background:#f77f00;border-width:3px}
+.rul i.mind{background:#fff;width:6px;border-radius:3px;margin-left:-3px;height:28px;top:10px;border:0}
+.rul em{position:absolute;top:-6px;font-style:normal;font-size:11px;color:var(--mute);transform:translateX(-50%);white-space:nowrap}
+.mkt p{margin:8px 0 0;font-size:14px;line-height:1.8}
+.terms .stp{margin-top:10px}
+</style>
+<style>
+.mail{margin:14px 0 0;background:#fff;color:#14233b;border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.mail .row{display:flex;gap:8px;align-items:baseline;border-bottom:1px solid #e3e9f0;padding:0 0 10px;margin:0 0 10px;font-size:14px}
+.mail .row span{color:#6b7a8c;flex:none}
+.mail .row b{flex:1;font-size:15.5px}
+.mail textarea{all:unset;display:block;width:100%;min-height:160px;overflow:hidden;white-space:pre-wrap;font:15px/1.95 Est,Tahoma,sans-serif;color:#14233b}
+.mail.ltr textarea,.mail.ltr .row b{direction:ltr;text-align:left;font-family:Tahoma,"Segoe UI",Arial,sans-serif}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 0}
+.acts button,.acts a{font:inherit;font-size:14px;font-weight:700;color:#fff;background:var(--glass2);border:1px solid var(--ln);border-radius:14px;padding:11px 6px;cursor:pointer;text-align:center;text-decoration:none}
+.acts .main{background:var(--orange);border-color:var(--orange);grid-column:1/-1}
+.whyl{margin:12px 0 0;padding:12px 16px;border-radius:14px;background:rgba(63,193,203,.12);border:1px solid rgba(63,193,203,.35);font-size:14px;line-height:1.9;color:#cdeff2}
+.whyl b{color:#fff;display:block}
+.tips{margin:14px 0 0;background:var(--glass);border-radius:16px;padding:12px 16px;font-size:13.5px;line-height:1.9;color:#c7d5e2}
+.tips b{color:#fff}
+.wait{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:50vh;color:var(--mute);font-size:15px;text-align:center}
+.spin{width:44px;height:44px;border-radius:50%;border:4px solid rgba(255,255,255,.15);border-top-color:var(--teal);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.note{margin:12px 0 0;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.8;background:rgba(247,127,0,.12);color:#ffd2a1;border:1px solid rgba(247,127,0,.35)}
+</style>
+<style>
+.hero{margin:18px 0 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hero h1{margin:0;font-size:26px;font-weight:900;line-height:1.4}
+.pts{flex:none;background:rgba(247,127,0,.16);border:1px solid rgba(247,127,0,.45);color:#ffc98f;border-radius:16px;padding:6px 12px;font-weight:900;font-size:15px;text-align:center;line-height:1.4}
+.pts small{display:block;font-size:11px;font-weight:400;color:#e9b98a}
+.topics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0}
+.topic{position:relative;text-align:right;font:inherit;color:#fff;background:var(--glass);border:1.5px solid var(--ln);border-radius:20px;padding:14px;cursor:pointer;min-height:150px;display:flex;flex-direction:column;gap:6px}
+.topic .em{font-size:32px;line-height:1}
+.topic b{font-size:15.5px;line-height:1.5}
+.topic small{font-size:12.5px;color:var(--mute);line-height:1.5}
+.topic .st{margin-top:auto;font-size:15px;letter-spacing:2px;color:#5b6d82}
+.topic .st i{font-style:normal;color:#ffc24b}
+.topic.done{border-color:var(--teal)}
+.bar4{display:flex;gap:4px;margin-top:4px}.bar4 i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.14)}.bar4 i.on{background:var(--teal)}
+.stg{display:flex;gap:6px;margin:14px 0 0;overflow:hidden}
+.stg button{flex:1;font:inherit;font-size:12.5px;color:#cbd8e5;background:var(--glass);border:0;border-radius:12px;padding:8px 2px;cursor:pointer;line-height:1.4}
+.stg button.on{background:#fff;color:#14233b;font-weight:900}
+.stg button.ok:not(.on){color:#9fe6ec}
+.tt{margin:16px 0 0;font-size:22px;font-weight:900;line-height:1.5}
+.phr{background:var(--glass);border-radius:18px;padding:14px 14px 12px;margin:12px 0 0}
+.phr .en{direction:ltr;text-align:left;font:700 17px/1.6 Tahoma,"Segoe UI",Arial,sans-serif;color:#fff}
+.phr .fa{font-size:14.5px;color:#b8c8d8;margin-top:6px;line-height:1.8}
+.ph{font-style:normal;color:#ffb35c}
+.say{display:flex;gap:8px;margin-top:10px;direction:ltr}
+.say button{font:inherit;font-size:13.5px;color:#fff;background:var(--glass2);border:0;border-radius:12px;padding:7px 12px;cursor:pointer}
+.mis{background:var(--glass);border-radius:18px;padding:14px;margin:12px 0 0}
+.mis .bad,.mis .good{direction:ltr;text-align:left;font:700 16.5px/1.6 Tahoma,Arial,sans-serif;border-radius:12px;padding:8px 12px}
+.mis .bad{background:rgba(255,107,94,.14);color:#ffb3ab;text-decoration:line-through;text-decoration-thickness:2px}
+.mis .good{background:rgba(63,193,203,.14);color:#9fe6ec;margin-top:8px}
+.mis .why{font-size:14px;color:#c7d5e2;margin-top:8px;line-height:1.8}
+.reveal{display:block;width:100%;margin-top:8px;font:inherit;font-size:14.5px;font-weight:700;color:#0b1424;background:var(--teal);border:0;border-radius:12px;padding:10px;cursor:pointer}
+.qbox{background:var(--glass);border-radius:20px;padding:16px;margin:14px 0 0}
+.qn{font-size:13px;color:var(--mute)}
+.qq{font-size:18px;font-weight:700;margin-top:6px;line-height:1.7}
+.qq.ltr{direction:ltr;text-align:left;font-family:Tahoma,Arial,sans-serif}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opts button{font:inherit;font-size:16px;color:#fff;background:rgba(0,0,0,.18);border:1.5px solid var(--ln);border-radius:14px;padding:13px 14px;cursor:pointer;text-align:right;line-height:1.6}
+.opts button.ltr{direction:ltr;text-align:left;font-family:Tahoma,Arial,sans-serif}
+.opts button.right{background:rgba(63,193,203,.22);border-color:var(--teal)}
+.opts button.wrong{background:rgba(255,107,94,.2);border-color:#ff6b5e}
+.fb{margin-top:12px;font-size:15px;font-weight:700;min-height:24px}
+.stars{font-size:46px;text-align:center;letter-spacing:6px;margin:20px 0 0;color:#40546b}
+.stars i{font-style:normal;color:#ffc24b}
+.big1{text-align:center;font-size:20px;font-weight:900;margin-top:8px}
+.msg{direction:ltr;text-align:left;white-space:pre-wrap;background:#fff;color:#14233b;border-radius:18px;padding:16px;font:15px/1.8 Tahoma,Arial,sans-serif;margin:14px 0 0}
+.backl{font:inherit;font-size:14px;color:var(--teal);background:none;border:0;padding:0;margin-top:14px;cursor:pointer}
+</style>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<link rel="manifest" href="english.webmanifest"><link rel="apple-touch-icon" href="../assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#14233b">
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="nav"><button type="button" class="back" id="back">قبلی</button><button type="button" class="next" id="next">بعدی ←</button></div>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var KEY='jg-tool-022-v1';
+var T=[
+{id:'first',e:'👋',t:'پیام اول به مشتری خارجی',s:'شروعی که جواب بگیره',
+ p:[['Hi [Name], I came across your project and it caught my attention.','سلام، پروژه‌تون رو دیدم و توجهم رو جلب کرد.'],
+    ["I'm a [graphic designer] with [5] years of experience.",'من [طراح گرافیک] با [۵] سال تجربه‌ام.'],
+    ["I've worked on similar projects for [cafés and small shops].",'روی پروژه‌های مشابه برای [کافه‌ها و مغازه‌ها] کار کردم.'],
+    ["Here's a quick idea for your project:",'یه ایده‌ی سریع برای پروژه‌تون:'],
+    ['You can see some of my work here: [link]','چند تا از کارهام رو اینجا می‌تونید ببینید.'],
+    ['Would you be open to a quick call this week?','موافقید این هفته یه تماس کوتاه داشته باشیم؟'],
+    ['Looking forward to hearing from you.','منتظر جوابتون هستم.'],
+    ['Best regards,','با احترام،']],
+ m:[['Dear Sir/Madam,','Hi Sarah,','پیام‌های کاری امروز ساده‌ان و طرف رو با اسمش صدا می‌زنن. «Dear Sir» خشک و قدیمی به نظر میاد.'],
+    ['I am agree with you.','I agree with you.','agree خودش فعله و am نمی‌خواد. این یکی از رایج‌ترین اشتباه‌های ماست.'],
+    ['I am waiting for your answer.','Looking forward to hearing from you.','جمله‌ی اول بی‌حوصله و طلبکارانه شنیده می‌شه. دومی مؤدب و گرمه.']],
+ q:[['شروع درست برای پیام به مشتری‌ای به اسم Sarah کدومه؟',['Dear Sir,','Hi Sarah,','Hello my friend,'],1],
+    ['Looking forward to ___ from you.',['hear','hearing','heard'],1],
+    ['I ___ with your idea.',['agree','am agree','agreeing'],0],
+    ['معنی «Would you be open to a quick call?» چیه؟',['موافقید یه تماس کوتاه داشته باشیم؟','تماس شما باز است؟','الان زنگ می‌زنم.'],0],
+    ["I'm a designer ___ 5 years of experience.",['with','of','in'],0]],
+ x:"Hi Sarah,\n\nI came across your project for a new café logo, and it caught my attention.\nI'm a graphic designer with 5 years of experience, and I've designed logos for 20+ small businesses.\n\nHere's a quick idea: a warm, hand-drawn style that feels friendly and local.\nYou can see some of my work here: [link]\n\nWould you be open to a quick call this week?\n\nBest regards,\n[Your name]"},
+{id:'price',e:'💰',t:'پیشنهاد قیمت و مذاکره',s:'قیمت بده، ارزون نفروش',
+ p:[['Based on the scope, my price is $[500].','با توجه به حجم کار، قیمت من [۵۰۰] دلاره.'],
+    ['This includes [2] rounds of revisions.','این قیمت شامل [۲] دور اصلاحه.'],
+    ["I'll deliver the final files within [7] days.",'فایل‌های نهایی رو ظرف [۷] روز تحویل می‌دم.'],
+    ['I usually ask for 50% upfront.','معمولاً ۵۰٪ رو پیش‌پرداخت می‌گیرم.'],
+    ['I understand your budget is limited.','متوجه‌ام که بودجه‌تون محدوده.'],
+    ['To fit your budget, we could reduce the scope.','برای اینکه به بودجه‌تون بخوره، می‌تونیم حجم کار رو کم کنیم.'],
+    ["That's the best I can offer for this quality.",'برای این کیفیت، این بهترین پیشنهاد منه.'],
+    ['Let me know if this works for you.','بگید براتون مناسبه یا نه.']],
+ m:[['The price is negotiable. Tell me your offer.','My price is $500. We could also start with a smaller package for $300.','وقتی خودتون عدد نگید، مشتری کمترین عدد رو می‌گه. به‌جاش گزینه بدید.'],
+    ['I can give you discount.','I can give you a discount.','قبل از discount باید a بیاد.'],
+    ['Please pay me the money.','Please send the 50% deposit so I can start.','جمله‌ی اول خام و بی‌ادبانه‌ست. دومی دقیق می‌گه چی و چرا.']],
+ q:[['This ___ two rounds of revisions.',['includes','including','include'],0],
+    ['مشتری گفت «گرونه». بهترین جواب کدومه؟',["OK, I'll do it for half.",'To fit your budget, we could reduce the scope.','Sorry, bye.'],1],
+    ['I usually ask for 50% ___.',['upfront','before','first'],0],
+    ['معنی «Let me know if this works for you.» چیه؟',['بگید براتون مناسبه یا نه.','بگید کار می‌کنید یا نه.','بذارید بدونم کار می‌کنه.'],0],
+    ['I can give you ___ discount.',['a','the','an'],0]],
+ x:"Hi Tom,\n\nThanks for the details. Based on the scope, my price is $500.\nThis includes 2 rounds of revisions, and I'll deliver the final files within 7 days.\nI usually ask for 50% upfront and the rest on delivery.\n\nIf the budget is tight, we could start with a smaller package for $300.\n\nLet me know if this works for you.\n\nBest,\n[Your name]"},
+{id:'meet',e:'🎥',t:'جلسه‌ی آنلاین',s:'معرفی، «تکرار کنید» و «منظورم اینه»',
+ p:[['Hi everyone, thanks for having me.','سلام به همه، ممنون که دعوتم کردید.'],
+    ['Let me briefly introduce myself.','اجازه بدید کوتاه خودم رو معرفی کنم.'],
+    ['Sorry, could you repeat that, please?','ببخشید، می‌شه تکرار کنید؟'],
+    ['Could you speak a bit more slowly?','می‌شه یه کم آروم‌تر صحبت کنید؟'],
+    ['What I mean is…','منظورم اینه که…'],
+    ['Just to make sure I understand, you want…','فقط برای اینکه مطمئن بشم درست فهمیدم، شما می‌خواید…'],
+    ["Sorry, I think you're on mute.",'ببخشید، فکر کنم میکروفونتون خاموشه.'],
+    ["I'll send you a summary after the call.",'بعد از جلسه یه خلاصه براتون می‌فرستم.']],
+ m:[['Repeat please!','Sorry, could you repeat that, please?','جمله‌ی اول دستوری شنیده می‌شه. «Sorry» و «could you» مؤدبش می‌کنه.'],
+    ["I didn't understand nothing.","I didn't understand that.",'توی انگلیسی دو منفی پشت هم نمیاد.'],
+    ['My English is very bad, sorry.','Could you speak a bit more slowly?','خودتون رو کوچیک نکنید. فقط چیزی رو که لازم دارید بخواید.']],
+ q:[['صدای طرف نمیاد. چی بگید؟',["Sorry, I think you're on mute.",'You are mute!','Speak!'],0],
+    ['Could you speak a bit more ___?',['slowly','slow','slower than'],0],
+    ['معنی «Just to make sure I understand…» چیه؟',['فقط برای اینکه مطمئن بشم درست فهمیدم…','فقط مطمئن باش که…','من مطمئنم که…'],0],
+    ["I didn't understand ___.",['that','nothing','no'],0],
+    ['Let me briefly ___ myself.',['introduce','present to','say'],0]],
+ x:"Hi Anna,\n\nThanks for the call today. Here's a quick summary:\n- You'd like a new homepage design by March 10.\n- I'll send the first draft on Monday.\n- You'll share the brand colors and photos by Friday.\n\nJust to make sure I understood everything, please let me know if I missed anything.\n\nBest,\n[Your name]"},
+{id:'follow',e:'⏰',t:'پیگیری و یادآوری پرداخت',s:'محکم، ولی مؤدب',
+ p:[['Just following up on my last message.','پیام قبلیم رو پیگیری می‌کنم.'],
+    ['I wanted to check if you had a chance to review the files.','خواستم ببینم فرصت کردید فایل‌ها رو ببینید؟'],
+    ['Friendly reminder: invoice #[12] is due on [March 5].','یادآوری دوستانه: سررسید فاکتور شماره‌ی [۱۲]، [۵ مارس] است.'],
+    ["I've attached the invoice for your convenience.",'برای راحتی‌تون فاکتور رو پیوست کردم.'],
+    ['Could you let me know when the payment will be sent?','می‌شه بگید پرداخت کی انجام می‌شه؟'],
+    ['The payment is now [5] days overdue.','پرداخت الان [۵] روز عقب افتاده.'],
+    ["Please let me know if there's any issue.",'اگه مشکلی هست لطفاً بگید.'],
+    ['Thanks in advance!','پیشاپیش ممنونم!']],
+ m:[["Why you didn't pay?",'Could you let me know when the payment will be sent?','جمله‌ی اول هم از نظر دستوری غلطه، هم طلبکارانه‌ست.'],
+    ['I send you the invoice yesterday.','I sent you the invoice yesterday.','برای گذشته، sent درسته.'],
+    ['Please answer me ASAP!!!','Please let me know when you get a chance.','علامت تعجب زیاد، عصبانی و پرخاشگر دیده می‌شه.']],
+ q:[['Just following ___ on my last message.',['up','on','back'],0],
+    ['I ___ you the invoice yesterday.',['sent','send','sending'],0],
+    ['برای اولین یادآوری، کدوم لحن بهتره؟',["Why you didn't pay?",'Friendly reminder: invoice #12 is due on March 5.','PAY NOW!!!'],1],
+    ['معنی «The payment is now 5 days overdue.» چیه؟',['پرداخت ۵ روز عقب افتاده.','۵ روز برای پرداخت وقت دارید.','۵ روز دیگه پرداخت کنید.'],0],
+    ['Thanks in ___!',['advance','before','ahead'],0]],
+ x:"Hi Mark,\n\nJust a friendly reminder that invoice #12 for the logo project was due on March 5.\nI've attached it again for your convenience.\n\nCould you let me know when the payment will be sent?\nPlease let me know if there's any issue.\n\nThanks in advance!\n[Your name]"},
+{id:'feedback',e:'✏️',t:'جواب به اصلاحات و انتقاد',s:'آروم، حرفه‌ای، بدون کار مجانی',
+ p:[["Thanks for the feedback, that's really helpful.",'ممنون از بازخوردتون، خیلی کمک کرد.'],
+    ['I see your point.','منظورتون رو متوجه می‌شم.'],
+    ["Could you tell me a bit more about what you don't like?",'می‌شه یه کم بیشتر بگید چه چیزی رو دوست ندارید؟'],
+    ["I'll make the changes and send a new version by [Thursday].",'تغییرات رو اعمال می‌کنم و تا [پنجشنبه] نسخه‌ی جدید رو می‌فرستم.'],
+    ['Just to clarify, this would be the third round of revisions.','فقط برای روشن شدن: این می‌شه دور سوم اصلاحات.'],
+    ['Additional revisions are billed at $[30] per hour.','اصلاحات اضافه ساعتی [۳۰] دلار حساب می‌شه.'],
+    ["I'd suggest keeping [the blue], because…",'پیشنهاد می‌کنم [آبی] بمونه، چون…'],
+    ["Sorry about that, I'll fix it right away.",'بابتش عذر می‌خوام، همین الان درستش می‌کنم.']],
+ m:[['You are wrong.',"I see your point, but I'd suggest…",'مخالفت مستقیم رابطه رو خراب می‌کنه. اول نشون بدید شنیدید، بعد پیشنهاد بدید.'],
+    ['I will do the changes.',"I'll make the changes.",'با changes فعل make میاد، نه do.'],
+    ['No problem, I do everything you want.','Just to clarify, this would be the third round of revisions.','قول بی‌حد یعنی کار مجانی بی‌پایان. مؤدبانه حد رو یادآوری کنید.']],
+ q:[["I'll ___ the changes.",['make','do','take'],0],
+    ['مشتری دور چهارم اصلاح رو مجانی می‌خواد. بهترین جواب؟',['Just to clarify, this would be the fourth round of revisions.','OK, no problem!','No.'],0],
+    ['معنی «I see your point.» چیه؟',['منظورتون رو متوجه می‌شم.','نقطه‌تون رو می‌بینم.','من نگاه می‌کنم.'],0],
+    ['مؤدبانه مخالفت کنید:',['You are wrong.',"I see your point, but I'd suggest keeping the blue.",'Blue is better, trust me.'],1],
+    ["Thanks for the ___, that's really helpful.",['feedback','feedbacks','feeding'],0]],
+ x:"Hi Lisa,\n\nThanks for the feedback, that's really helpful.\nI'll make the changes to the menu and send a new version by Thursday.\n\nAbout the color: I see your point, but I'd suggest keeping the blue, because it matches your logo.\n\nJust to clarify, this will be the second round of revisions included in the price.\n\nBest,\n[Your name]"},
+{id:'profile',e:'🌍',t:'پروفایل Upwork یا LinkedIn',s:'معرفی‌ای که مشتری بیاره',
+ p:[['I help [small businesses] [grow their sales] with [clear, modern design].','به [کسب‌وکارهای کوچیک] کمک می‌کنم با [طراحی مدرن] [فروششون رو بالا ببرن].'],
+    ['[5]+ years of experience in [UI/UX design]','بیش از [۵] سال تجربه در [طراحی رابط کاربری]'],
+    ["I've worked with [30+] clients from [8] countries.",'با بیش از [۳۰] مشتری از [۸] کشور کار کردم.'],
+    ['What I can do for you:','کارهایی که می‌تونم براتون انجام بدم:'],
+    ['Fast communication and on-time delivery','ارتباط سریع و تحویل به‌موقع'],
+    ['Recent result: increased sign-ups by [25%].','نتیجه‌ی اخیر: ثبت‌نام‌ها رو [۲۵٪] بالا بردم.'],
+    ['Fluent in English and Persian','مسلط به انگلیسی و فارسی'],
+    ["Send me a message and let's talk about your project.",'پیام بدید تا درباره‌ی پروژه‌تون صحبت کنیم.']],
+ m:[['I am hardworking and responsible person.','I help small businesses grow with clear, modern design.','صفت‌های کلی رو همه می‌نویسن. بگید برای مشتری چه کاری می‌کنید.'],
+    ['I have 5 years experience.','I have 5 years of experience.','بعد از years باید of بیاد.'],
+    ['I am expert in Photoshop.',"I'm an expert in Photoshop.",'قبل از expert باید an بیاد.']],
+ q:[['I have 5 years ___ experience.',['of','in','with'],0],
+    ['بهترین جمله‌ی اول پروفایل کدومه؟',['I am hardworking and responsible.','I help online shops sell more with clear product photos.','Hello, I am Ali.'],1],
+    ["I'm ___ expert in Photoshop.",['an','a','the'],0],
+    ['معنی «on-time delivery» چیه؟',['تحویل به‌موقع','تحویل سریع','تحویل رایگان'],0],
+    ["I've worked ___ 30+ clients.",['with','to','at'],0]],
+ x:"I help small businesses grow their sales with clear, modern design.\n\n• 5+ years of experience in logo and brand design\n• Worked with 30+ clients from 8 countries\n• Recent result: a new menu design that increased café orders by 20%\n\nWhat I can do for you:\n• Logo and brand identity\n• Social media templates\n• Packaging design\n\nFast communication and on-time delivery. Fluent in English and Persian.\n\nSend me a message and let's talk about your project."}
+];
+
+var STG=['جمله‌ها','اشتباه رایج','تمرین','پیام کامل'];
+var st={v:'home',t:0,s:0,q:0,qs:[],picked:null,score:0,P:{}};
+try{var d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.P)st.P=d.P}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({P:st.P}))}catch(e){}}
+function pr(id){return st.P[id]||(st.P[id]={s:0,best:0,stars:0})}
+function fa(n){return Number(n).toLocaleString('fa-IR')}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ph(s){return esc(s).replace(/\[([^\]]+)\]/g,'<i class="ph">[$1]</i>')}
+function total(){var n=0;T.forEach(function(t){var p=st.P[t.id];if(p)n+=(p.best||0)*10+(p.s>=4?20:0)});return n}
+function starsHtml(n){var h='';for(var i=0;i<3;i++)h+=i<n?'<i>★</i>':'★';return h}
+
+// speech: device voice, free and offline where available
+var canSay='speechSynthesis' in window;
+function say(text,slow){
+  if(!canSay)return false;
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text.replace(/\[|\]/g,'').replace(/#/g,' number '));u.lang='en-US';u.rate=slow?0.6:0.95;
+  var v=speechSynthesis.getVoices().filter(function(x){return /^en(-|_)US/i.test(x.lang)})[0];if(v)u.voice=v;speechSynthesis.speak(u);return true}catch(e){return false}
+}
+
+function home(){
+  return '<div class="head"><span>جعبه ابزار جابگرید</span><b>انگلیسی کاری</b></div>'+
+   '<div class="hero"><h1>انگلیسی برای موقعیت‌های واقعی کار</h1><div class="pts">⭐ '+fa(total())+'<small>امتیاز</small></div></div>'+
+   '<p class="sub">یه موضوع انتخاب کن. هر موضوع ۴ مرحله داره: جمله‌ها با صدا، اشتباه‌های رایج، تمرین، و یه پیام کامل برای کپی.</p>'+
+   '<div class="topics">'+T.map(function(t,i){var p=pr(t.id);return '<button type="button" class="topic'+(p.s>=4?' done':'')+'" data-t="'+i+'"><span class="em">'+t.e+'</span><b>'+t.t+'</b><small>'+t.s+'</small><span class="bar4">'+[0,1,2,3].map(function(k){return '<i class="'+(k<p.s?'on':'')+'"></i>'}).join('')+'</span><span class="st">'+starsHtml(p.stars)+'</span></button>'}).join('')+'</div>'+
+   (canSay?'':'<p class="hint">صدای انگلیسی روی این گوشی در دسترس نیست؛ بقیه‌ی بخش‌ها کار می‌کنن.</p>');
+}
+function topicHead(){
+  var t=T[st.t],p=pr(t.id);
+  return '<button type="button" class="backl" id="toHome">→ همه‌ی موضوع‌ها</button><div class="tt">'+t.e+' '+t.t+'</div>'+
+   '<div class="stg">'+STG.map(function(n,i){return '<button type="button" data-s="'+i+'" class="'+(i===st.s?'on':'')+(i<p.s?' ok':'')+'">'+fa(i+1)+'. '+n+(i<p.s?' ✓':'')+'</button>'}).join('')+'</div>';
+}
+function stage(){
+  var t=T[st.t];
+  if(st.s===0)return '<p class="sub">هر جمله رو بخون و گوش بده. قسمت‌های <i class="ph">[نارنجی]</i> رو با اطلاعات خودت عوض کن.</p>'+
+    t.p.map(function(x,i){return '<div class="phr"><div class="en">'+ph(x[0])+'</div><div class="fa">'+ph(x[1])+'</div>'+(canSay?'<div class="say"><button type="button" data-say="'+i+'">🔊 گوش بده</button><button type="button" data-slow="'+i+'">🐢 آروم</button></div>':'')+'</div>'}).join('');
+  if(st.s===1)return '<p class="sub">اول جمله‌ی غلط رو بخون و حدس بزن چرا غلطه، بعد درستش رو ببین.</p>'+
+    t.m.map(function(x,i){return '<div class="mis"><div class="bad">'+esc(x[0])+'</div><div id="mr'+i+'" hidden><div class="good">'+esc(x[1])+'</div><div class="why">'+esc(x[2])+'</div></div><button type="button" class="reveal" data-rv="'+i+'">ببین درستش چیه 👀</button></div>'}).join('');
+  if(st.s===2)return quiz();
+  return '<p class="sub">این یه پیام کامل با همه‌ی چیزهاییه که یاد گرفتی. کپیش کن و قسمت‌های داخل [ ] رو عوض کن.</p><div class="msg">'+ph(t.x)+'</div>'+
+    '<div class="acts"><button type="button" class="main" id="cpMsg">📋 کپی پیام</button>'+(canSay?'<button type="button" id="sayMsg">🔊 گوش بده</button>':'')+'</div><p class="copied" id="copied" hidden></p>';
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
+function startQuiz(){var t=T[st.t];st.q=0;st.score=0;st.picked=null;st.qs=t.q.map(function(q){var o=q[1].map(function(s,i){return {s:s,ok:i===q[2]}});return {q:q[0],o:shuffle(o)}})}
+function isEn(s){return /^[A-Za-z0-9'"(\[]/.test(s)}
+function quiz(){
+  if(!st.qs.length)startQuiz();
+  if(st.q>=st.qs.length){
+    var n=st.score,stars=n>=5?3:n>=4?2:n>=3?1:0;
+    return '<div class="stars">'+starsHtml(stars)+'</div><div class="big1">'+fa(n)+' از '+fa(st.qs.length)+' درست!</div>'+
+     '<p class="sub" style="text-align:center">'+(stars===3?'عالی! همه رو درست زدی 🎉':stars>=1?'خوبه! یه بار دیگه بزنی، ستاره‌ی کامل می‌گیری.':'اشکالی نداره. جمله‌ها رو یه بار دیگه ببین و دوباره امتحان کن.')+'</p>'+
+     '<button type="button" class="aibtn ghost" id="retry">🔁 دوباره تمرین کن</button>';
+  }
+  var q=st.qs[st.q],answered=st.picked!==null;
+  return '<div class="qbox"><div class="qn">سؤال '+fa(st.q+1)+' از '+fa(st.qs.length)+' · امتیاز: '+fa(st.score*10)+'</div><div class="qq'+(isEn(q.q)?' ltr':'')+'">'+esc(q.q)+'</div><div class="opts">'+
+   q.o.map(function(o,i){var c=answered?(o.ok?'right':(i===st.picked?'wrong':'')):'';return '<button type="button" data-o="'+i+'" class="'+(isEn(o.s)?'ltr ':'')+c+'"'+(answered?' disabled':'')+'>'+esc(o.s)+'</button>'}).join('')+
+   '</div><div class="fb">'+(answered?(q.o[st.picked].ok?'✅ آفرین! +۱۰':'❌ جواب درست سبز شده.'):'')+'</div></div>';
+}
+function draw(){
+  var a=$('app');
+  if(st.v==='home'){a.innerHTML=home();$('back').hidden=true;$('next').hidden=true}
+  else{
+    a.innerHTML=topicHead()+stage();$('back').hidden=false;$('next').hidden=false;
+    $('back').textContent=st.s===0?'موضوع‌ها':'قبلی';
+    var t=T[st.t];
+    if(st.s===2&&st.q<st.qs.length){$('next').textContent=st.picked===null?'یه گزینه رو انتخاب کن':'سؤال بعد ←';$('next').disabled=st.picked===null}
+    else{$('next').disabled=false;$('next').textContent=st.s===3?'✅ تموم شد!':'مرحله‌ی بعد ←'}
+  }
+  window.scrollTo(0,0);save();
+}
+function mark(s){var p=pr(T[st.t].id);if(p.s<s)p.s=s}
+function open(i){st.v='topic';st.t=i;var p=pr(T[i].id);st.s=Math.min(p.s,3);st.qs=[];draw()}
+$('app').addEventListener('click',function(e){
+  var b;
+  if(b=e.target.closest('[data-t]'))return open(+b.dataset.t);
+  if(e.target.closest('#toHome')){st.v='home';return draw()}
+  if(b=e.target.closest('.stg [data-s]')){st.s=+b.dataset.s;if(st.s===2)st.qs=[];return draw()}
+  if(b=e.target.closest('[data-say]')){say(T[st.t].p[+b.dataset.say][0]);return}
+  if(b=e.target.closest('[data-slow]')){say(T[st.t].p[+b.dataset.slow][0],true);return}
+  if(b=e.target.closest('[data-rv]')){$('mr'+b.dataset.rv).hidden=false;b.hidden=true;return}
+  if(b=e.target.closest('[data-o]')){if(st.picked!==null)return;st.picked=+b.dataset.o;if(st.qs[st.q].o[st.picked].ok)st.score++;return draw()}
+  if(e.target.closest('#retry')){startQuiz();return draw()}
+  if(e.target.closest('#sayMsg')){say(T[st.t].x);return}
+  if(e.target.closest('#cpMsg')){
+    var txt=T[st.t].x,c=$('copied');function done(ok){c.textContent=ok?'کپی شد ✓':'کپی نشد؛ متن رو با لمس طولانی انتخاب کن.';c.hidden=false;setTimeout(function(){c.hidden=true},2500)}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){done(true)},function(){done(false)});else done(false);
+  }
+});
+$('next').onclick=function(){
+  if(st.v!=='topic')return;
+  if(st.s===2&&st.q<st.qs.length){if(st.picked===null)return;st.q++;st.picked=null;
+    if(st.q>=st.qs.length){var p=pr(T[st.t].id),n=st.score,stars=n>=5?3:n>=4?2:n>=3?1:0;p.best=Math.max(p.best||0,n);p.stars=Math.max(p.stars||0,stars);mark(3)}
+    return draw()}
+  if(st.s===3){mark(4);st.v='home';return draw()}
+  mark(st.s+1);st.s++;if(st.s===2)st.qs=[];draw();
+};
+$('back').onclick=function(){if(st.v!=='topic')return;if(st.s===0){st.v='home'}else{st.s--;if(st.s===2)st.qs=[]}draw()};
+if(canSay)try{speechSynthesis.getVoices()}catch(e){}
+draw();
+})();
+</script>
+<!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
+<style>
+:root{--line:#b8c6d6}
+@media(prefers-color-scheme:dark){html:not([data-theme=light]){--line:#4a6382;--field:#16243a}}
+html[data-theme=dark]{--line:#4a6382;--field:#16243a}
+html[data-theme=light]{--line:#b8c6d6}
+input[type=text],input[type=number],input[type=time],input[type=date],select,textarea{border-width:1.5px!important}
+.big{grid-template-columns:repeat(auto-fit,minmax(13em,1fr))!important;row-gap:18px!important}
+.big b{font-size:clamp(24px,2.6vw,32px)!important;white-space:normal!important;overflow-wrap:anywhere}
+@media(max-width:420px){.ruler .mk{font-size:12px}}
+.jg-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px max(4vw,12px);background:#14233b;color:#fff;font:14px/1.4 Est,Vazirmatn,Tahoma,sans-serif;direction:rtl}
+.jg-bar a,.jg-bar button{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.12);border:0;border-radius:20px;padding:7px 14px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.jg-bar button.jg-add{background:#f77f00;font-weight:700}
+.jg-bar button[disabled]{background:rgba(255,255,255,.12);font-weight:400;cursor:default}
+.jg-tip{display:none;background:#fff1e3;color:#14233b;font:14px/1.7 Est,Vazirmatn,Tahoma,sans-serif;padding:10px max(4vw,12px);direction:rtl;border-bottom:1px solid #f3c99b}
+.jg-tip.on{display:block}
+</style>
+<script>
+(function(){
+  var SLUG='english', BOT='JobgradeBot', DIRECT=[]; // DIRECT: tools that have their own BotFather /newapp link
+  var tg=window.Telegram&&Telegram.WebApp; var inTg=!!(tg&&tg.initData);
+  var fromCat=false; try{fromCat=sessionStorage.getItem('jg_cat')==='1'}catch(e){}
+  var bar=document.createElement('div'); bar.className='jg-bar';
+  bar.innerHTML='<a href="../index.html" class="jg-all">🧰 همه‌ی ابزارها</a><button type="button" class="jg-add">📲 افزودن به صفحه‌ی گوشی</button>';
+  var tip=document.createElement('div'); tip.className='jg-tip';
+  document.body.insertBefore(tip,document.body.firstChild); document.body.insertBefore(bar,document.body.firstChild);
+  var btn=bar.querySelector('.jg-add');
+  function added(){btn.textContent='✓ روی صفحه‌ی گوشیت هست';btn.disabled=true}
+  function showTip(t){tip.innerHTML=t;tip.classList.add('on')}
+  if(inTg){
+    tg.ready(); tg.expand();
+    var de=document.documentElement; if(!de.dataset.theme&&tg.colorScheme)de.dataset.theme=tg.colorScheme;
+    try{tg.setHeaderColor('#14233b');tg.setBackgroundColor('#ffffff')}catch(e){}
+    tg.BackButton.show(); tg.BackButton.onClick(function(){location.href='../index.html'});
+    bar.querySelector('.jg-all').style.display='none';
+    var can=tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0');
+    if(!can){btn.style.display='none';bar.style.display='none'}
+    else{
+      tg.checkHomeScreenStatus(function(st){ if(st==='added'&&!fromCat)added(); if(st==='unsupported'){btn.style.display='none';bar.style.display='none'} });
+      tg.onEvent('homeScreenAdded',added);
+      btn.onclick=function(){
+        // From the catalog we are inside the catalog app; open this tool's own app so the shortcut opens this tool.
+        if(fromCat&&BOT&&DIRECT.indexOf(SLUG)>=0){tg.openTelegramLink('https://t.me/'+BOT+'/'+SLUG+'?startapp=home');}
+        else tg.addToHomeScreen();
+      };
+      var sp=tg.initDataUnsafe&&tg.initDataUnsafe.start_param;
+      if(sp==='home'&&!fromCat)setTimeout(function(){tg.addToHomeScreen()},600);
+    }
+  }else{
+    var ev=null;
+    window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e});
+    if(window.matchMedia('(display-mode: standalone)').matches){bar.style.display='none'}
+    btn.onclick=function(){
+      if(ev){ev.prompt();ev=null;return}
+      var ios=/iPhone|iPad|iPod/.test(navigator.userAgent);
+      showTip(ios?'در Safari دکمه‌ی اشتراک‌گذاری (مربع با فلش رو به بالا) رو بزن، بعد «Add to Home Screen».'
+                 :'از منوی سه‌نقطه‌ی مرورگر، گزینه‌ی «Add to Home screen» یا «Install app» رو بزن.');
+    };
+  }
+})();
+</script>
+</body>
+</html>
