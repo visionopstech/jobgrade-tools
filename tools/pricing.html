@@ -2,335 +2,314 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>دستیار قیمت‌گذاری جابگرید</title>
 <style>
-@font-face{font-family:Vazirmatn;src:url("fonts/Vazirmatn-wght.woff2") format("woff2");font-weight:100 900;font-display:swap}
-/* VOICE work tool, calm and exact, like a good accountant's quote sheet
-   IDEA a price ruler: where your price sits against your real cost
-   PICTURE a live scale from zero to the premium price, loss zone shaded, three tiers and your own price pinned on it
-   COLOUR JobGrade navy band, white sheet, teal for safe zone, orange for the chosen tier, red only for loss
-   TYPE Vazirmatn 800 for figures and titles, Vazirmatn 400 for text
-   LAYOUT laptop: inputs right, sticky live result left; phone: title, inputs, results, slim sticky price bar */
-:root{color-scheme:light dark;--bg:#ffffff;--ink:#14233b;--mute:#5a6a80;--line:#dbe3ec;--panel:#f3f8f9;--navy:#14233b;--teal:#178f99;--tealbg:#dff2f3;--orange:#e47b10;--orangebg:#fff1e3;--red:#c8352b;--redbg:#fbe7e5;--field:#ffffff}
-:root[data-theme=light]{color-scheme:light}
-:root[data-theme=dark]{color-scheme:dark}
-*{box-sizing:border-box;min-width:0}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.6 Vazirmatn,Tahoma,"Segoe UI",sans-serif;overflow-x:clip}
-.top{background:var(--navy);color:#fff;padding:22px max(5vw,16px) 26px}
-.top .kick{font-size:14px;color:#9fd8dd;margin:0 0 4px}
-.top h1{font-size:clamp(30px,5vw,44px);line-height:1.15;margin:0;font-weight:800}
-.top p{margin:8px 0 0;color:#c9d6e6;max-width:60ch;font-size:15px}
-.wrap{max-width:1240px;margin:0 auto;padding:24px max(4vw,16px) 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start}
-.inputs{display:grid;gap:18px}
-fieldset{border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px;margin:0;background:var(--bg)}
-legend{font-weight:700;padding:0 6px;font-size:16px}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:12px}
-label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
-input[type=text],textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
-input:focus-visible,textarea:focus-visible,button:focus-visible,.seg label:focus-within{outline:3px solid var(--teal);outline-offset:1px}
-.num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
-.unit{font-size:12.5px;color:var(--mute)}
-input[type=range]{width:100%;accent-color:var(--teal);height:44px}
-.seg{display:flex;gap:6px;flex-wrap:wrap}
-.seg label{flex:1 1 6em;display:block;position:relative}
-.seg input{position:absolute;opacity:0;top:0;right:0;bottom:0;left:0}
-.seg span{display:block;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 8px;min-height:44px;color:var(--ink);cursor:pointer}
-.seg input:checked+span{background:var(--tealbg);border-color:var(--teal);font-weight:700}
-.hint{font-size:13px;color:var(--mute);margin:6px 0 0}
-details{font-size:14px;color:var(--mute)}
-summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
-.btns{display:flex;gap:10px;flex-wrap:wrap}
-button{font:inherit;font-size:15px;border-radius:10px;min-height:44px;padding:8px 16px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
-button.main{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
-.result{position:sticky;top:16px;display:grid;gap:16px}
-.card{background:var(--panel);border-radius:16px;padding:18px}
-.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(10em,1fr));gap:14px}
-.big div{display:grid}
-.big small{font-size:14px;color:var(--mute)}
-.big b{font-size:clamp(26px,3.6vw,36px);font-weight:800;line-height:1.2;white-space:nowrap}
-.big i{font-style:normal;font-size:13px;color:var(--mute)}
-.ruler{position:relative;height:118px;margin:14px 4px 2px}
-.track{position:absolute;left:0;right:0;top:52px;height:14px;border-radius:7px;background:var(--tealbg);overflow:hidden}
-.loss{position:absolute;top:0;bottom:0;right:0;background:var(--redbg);border-inline-end:2px solid var(--red)}
-.mk{position:absolute;transform:translateX(50%);text-align:center;white-space:nowrap;font-size:13px;line-height:1.3}
-.mk.t{top:0}
-.mk.t .dot{width:14px;height:14px;border-radius:50%;background:var(--teal);margin:6px auto 0;border:2px solid var(--bg)}
-.mk.t.on .dot{background:var(--orange);width:18px;height:18px}
-.mk.t.on{font-weight:700}
-.mk.f{top:70px;color:var(--red)}
-.mk.p{top:70px;color:var(--ink);font-weight:700}
-.mk.p::before{content:"";display:block;width:2px;height:22px;background:var(--ink);margin:-22px auto 2px}
-.mk.p.low{top:92px}
-.mk.p.low::before{height:44px;margin-top:-44px}
-.alert{border-radius:12px;padding:12px 14px;font-size:15px;margin:0}
-.alert.bad{background:var(--redbg);color:var(--red)}
-.alert.warn{background:var(--orangebg);color:var(--orange)}
-.alert.ok{background:var(--tealbg);color:var(--teal)}
-.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.tier{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg);cursor:pointer;text-align:start;display:grid;gap:4px;align-content:start}
-.tier.on{border:2px solid var(--orange);background:var(--orangebg)}
-.tier h3{margin:0;font-size:15px}
-.tier .pr{font-size:20px;font-weight:800;white-space:nowrap}
-.tier ul{margin:4px 0 0;padding-inline-start:16px;font-size:13px;color:var(--mute)}
-.tier .eff{font-size:12.5px;color:var(--mute)}
-h2{font-size:18px;margin:0 0 8px}
-table{border-collapse:collapse;width:100%;font-size:14px}
-td{padding:6px 0;border-bottom:1px solid var(--line)}
-td:last-child{text-align:left;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
-textarea{min-height:250px;line-height:1.8;resize:vertical}
-.copyrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.copied{font-size:14px;color:var(--teal)}
-.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);min-height:44px}
+@font-face{font-family:Est;font-weight:400;src:url("../assets/est-400.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:700;src:url("../assets/est-700.woff2") format("woff2");font-display:swap}
+@font-face{font-family:Est;font-weight:900;src:url("../assets/est-900.woff2") format("woff2");font-display:swap}
+:root{--ink:#ffffff;--mute:#a9bccd;--teal:#3fc1cb;--orange:#f77f00;--red:#ff6b5e;--glass:rgba(255,255,255,.07);--glass2:rgba(255,255,255,.14);--ln:rgba(255,255,255,.22)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{color:var(--ink);font:16px/1.6 Est,Tahoma,"Segoe UI",sans-serif;background:#0b1424;background-image:radial-gradient(circle at 30% 0%,#1f6f7a 0%,#14233b 50%,#0b1424 100%);background-attachment:fixed;min-height:100vh}
+.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:14px 20px 0}
+.head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mute)}
+.head b{color:#fff;font-size:14px}
+.prog{display:flex;gap:6px;margin:12px 0 0}
+.prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.16);transition:background .25s}
+.prog i.on{background:var(--teal)}
+.screen{display:none;flex:1;flex-direction:column;padding-bottom:110px;animation:in .25s ease}
+.screen.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.step{margin:24px 0 0;font-size:13px;color:#8fd3da}
+.q{margin:4px 0 0;font-size:26px;font-weight:900;line-height:1.4}
+.sub{margin:8px 0 0;color:var(--mute);font-size:14px}
+.bignum{margin:30px 0 0;text-align:center}
+.bignum input{all:unset;width:100%;text-align:center;font:900 64px/1.1 Est,Tahoma,sans-serif;color:#fff;caret-color:var(--teal)}
+.bignum span{display:block;color:var(--mute);font-size:15px;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 0;justify-content:center}
+.chips button{font:inherit;font-size:15px;color:#fff;min-width:58px;padding:11px 16px;border-radius:30px;background:var(--glass);border:1px solid var(--ln);cursor:pointer}
+.chips button.on{background:var(--teal);color:#0b1424;font-weight:900;border-color:var(--teal)}
+.fields{display:grid;gap:14px;margin:24px 0 0}
+.fld{display:grid;gap:6px;font-size:14px;color:var(--mute)}
+.fld input{font:inherit;font-size:17px;color:#fff;background:var(--glass);border:1.5px solid var(--ln);border-radius:14px;padding:12px 14px;min-height:50px;width:100%;outline:none}
+.fld input:focus{border-color:var(--teal);background:rgba(63,193,203,.08)}
+.fld input::placeholder{color:#6f8399}
+.fld small{font-size:12.5px;color:#7f93a8}
+.stp{display:flex;align-items:center;justify-content:space-between;background:var(--glass);border:1px solid var(--ln);border-radius:16px;padding:10px 12px 10px 14px;margin-top:12px}
+.stp .l{font-size:15px}.stp .l small{display:block;color:#7f93a8;font-size:12.5px}
+.stp .c{display:flex;align-items:center;gap:6px}
+.stp button{width:42px;height:42px;border-radius:50%;border:0;background:var(--glass2);color:#fff;font:900 22px/1 Est,Tahoma;cursor:pointer}
+.stp input{all:unset;width:64px;text-align:center;font:900 22px Est,Tahoma;color:#fff}
+.seg{display:flex;gap:8px;margin-top:10px;background:var(--glass);border-radius:16px;padding:5px}
+.seg button{flex:1;font:inherit;font-size:15px;color:#fff;background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
+.seg button.on{background:#fff;color:#14233b;font-weight:900}
+.lbl{margin:26px 0 0;font-size:15px;font-weight:700}
+.hint{font-size:13px;color:#7f93a8;margin:8px 0 0}
+details.more{margin-top:18px;background:var(--glass);border-radius:16px;padding:4px 14px}
+details.more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;color:var(--mute)}
+details.more[open]{padding-bottom:14px}
+input[type=range]{width:100%;accent-color:var(--teal);height:36px}
+.nav{position:fixed;bottom:0;left:0;right:0;padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(0deg,#0b1424 60%,rgba(11,20,36,0));display:flex;gap:10px;max-width:520px;margin:0 auto}
+.nav button{font:inherit;font-weight:900;font-size:16px;border:0;border-radius:16px;padding:16px;cursor:pointer;color:#fff}
+.nav .back{flex:.45;background:#22324a}
+.nav .next{flex:1;background:var(--orange)}
+.nav button[disabled]{opacity:.45}
+.gauge{margin:14px auto 0;width:280px;max-width:100%;position:relative}
+.gauge svg{display:block;width:100%;height:auto}
+.gauge .v{position:absolute;bottom:2px;left:0;right:0;text-align:center}
+.gauge .v b{font-size:36px;font-weight:900;display:block;line-height:1.15}
+.gauge .v span{font-size:13px;color:var(--mute)}
+.legend{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--mute);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:5px;vertical-align:-1px}
+.tabs{display:flex;margin:18px 0 0;background:var(--glass);border-radius:16px;padding:5px}
+.tabs button{flex:1;font:inherit;font-size:14px;color:#fff;background:transparent;border:0;border-radius:12px;padding:10px 4px;cursor:pointer;line-height:1.4}
+.tabs button small{display:block;font-size:12px;color:var(--mute)}
+.tabs button.on{background:#fff;color:#14233b;font-weight:900}
+.tabs button.on small{color:#5a6a80}
+.kv{margin:14px 0 0;border-radius:18px;background:var(--glass);padding:4px 16px}
+.kv div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px}
+.kv div:last-child{border:0}
+.kv b{color:var(--teal);white-space:nowrap}
+.alert{margin:14px 0 0;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.8}
+.alert.bad{background:rgba(255,107,94,.14);color:#ffb3ab;border:1px solid rgba(255,107,94,.35)}
+.alert.warn{background:rgba(247,127,0,.14);color:#ffc98f;border:1px solid rgba(247,127,0,.35)}
+.alert.ok{background:rgba(63,193,203,.12);color:#9fe6ec;border:1px solid rgba(63,193,203,.35)}
+.prop{margin:16px 0 0;background:var(--glass);border-radius:18px;padding:14px}
+.prop h3{margin:0 0 6px;font-size:15px}
+.prop textarea{width:100%;min-height:230px;font:inherit;font-size:14.5px;line-height:1.9;color:#fff;background:rgba(0,0,0,.18);border:1px solid var(--ln);border-radius:12px;padding:12px;resize:vertical}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
 .chk input{width:20px;height:20px;accent-color:var(--orange)}
-.foot{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px) 90px;font-size:13.5px;color:var(--mute)}
-.sample{font-size:13px;color:var(--orange);margin:0}
-.bar{display:none}
-@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.result{position:static}.bar{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;padding:10px 16px;gap:16px;justify-content:space-between;font-size:14px;z-index:5}.bar b{font-size:16px;white-space:nowrap}}
-@media(max-width:560px){.tiers{grid-template-columns:minmax(0,1fr)}.ruler{margin-inline:18px}}
-@media(prefers-reduced-motion:no-preference){.mk,.loss{transition:inset-inline-start .35s ease,width .35s ease}}
-@media(prefers-color-scheme:dark){html:not([data-theme=light]){--bg:#0d1626;--ink:#e8eef6;--mute:#9fb0c6;--line:#24344d;--panel:#132036;--teal:#3fc1cb;--tealbg:#16384a;--orange:#ff9a3c;--orangebg:#3a2614;--red:#ff6b5e;--redbg:#3a1a19;--field:#0f1a2c}}html[data-theme=dark]{--bg:#0d1626;--ink:#e8eef6;--mute:#9fb0c6;--line:#24344d;--panel:#132036;--teal:#3fc1cb;--tealbg:#16384a;--orange:#ff9a3c;--orangebg:#3a2614;--red:#ff6b5e;--redbg:#3a1a19;--field:#0f1a2c}</style>
+.copied{font-size:13.5px;color:var(--teal);text-align:center;margin-top:8px}
+.foot{font-size:12.5px;color:#7f93a8;margin:18px 0 0;line-height:1.8}
+.calc td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.calc td:last-child{text-align:left;white-space:nowrap}
+.calc{width:100%;border-collapse:collapse}
+</style>
 <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <link rel="manifest" href="pricing.webmanifest"><link rel="apple-touch-icon" href="../assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#14233b">
 </head>
 <body>
-<header class="top">
-  <p class="kick">جعبه ابزار شغلی جابگرید · ابزار ۰۰۱</p>
-  <h1>دستیار قیمت‌گذاری</h1>
-  <p>زمان، هزینه و درآمدی که می‌خوای رو وارد کن. کف قیمتت، سه گزینه‌ی قیمت و متن پیشنهاد آماده‌ی ارسال رو همین‌جا می‌گیری.</p>
-</header>
+<div class="app">
+  <div class="head"><span>جعبه ابزار جابگرید · ابزار ۰۰۱</span><b>قیمت‌گذاری در ۶ قدم</b></div>
+  <div class="prog" id="prog"></div>
 
-<main class="wrap">
-<form class="inputs" id="f" autocomplete="off">
-  <p class="sample" id="sampleNote">عددهای فعلی نمونه‌ان: طراحی لوگو برای یک کافه.</p>
-  <fieldset>
-    <legend>پروژه</legend>
-    <div class="row">
-      <label>چه خدمتی؟<input type="text" id="service" placeholder="مثلاً طراحی لوگو"></label>
-      <label>اسم مشتری<input type="text" id="client" placeholder="اختیاری"></label>
+  <!-- 1 -->
+  <section class="screen" data-s="1">
+    <div class="step">قدم ۱ از ۶</div>
+    <div class="q">برای چه کاری می‌خوای قیمت بدی؟</div>
+    <div class="sub">این‌ها توی متن پیشنهادت به مشتری میاد.</div>
+    <div class="fields">
+      <label class="fld">چه خدمتی؟<input id="service" placeholder="مثلاً طراحی لوگو"></label>
+      <label class="fld">اسم مشتری<input id="client" placeholder="اختیاری"></label>
+      <label class="fld">دقیقاً چی تحویل می‌دی؟<input id="deliv" placeholder="مثلاً لوگو + راهنمای رنگ و فونت"></label>
     </div>
-    <label style="margin-top:12px">دقیقاً چه چیزی تحویل می‌دی؟<input type="text" id="deliv" placeholder="مثلاً لوگو + راهنمای رنگ و فونت"></label>
-  </fieldset>
+  </section>
 
-  <fieldset>
-    <legend>چند ساعت کار می‌بره؟</legend>
-    <div class="row">
-      <label>جلسه و هماهنگی<input type="text" class="num" inputmode="decimal" id="hMeet"><span class="unit">ساعت</span></label>
-      <label>اجرا<input type="text" class="num" inputmode="decimal" id="hWork"><span class="unit">ساعت</span></label>
-      <label>اصلاحات<input type="text" class="num" inputmode="decimal" id="hRev"><span class="unit">ساعت</span></label>
-    </div>
-  </fieldset>
+  <!-- 2 -->
+  <section class="screen" data-s="2">
+    <div class="step">قدم ۲ از ۶</div>
+    <div class="q">اجرای این کار چند ساعت وقتت رو می‌گیره؟</div>
+    <div class="sub">فقط زمان انجام کار، بدون جلسه و اصلاحات.</div>
+    <div class="bignum"><input id="hWork" inputmode="decimal"><span>ساعت</span></div>
+    <div class="chips" data-for="hWork" data-v="5,10,14,20,30,40"></div>
+  </section>
 
-  <fieldset>
-    <legend>هزینه و درآمد</legend>
-    <div class="row">
-      <label>هزینه‌های مستقیم این پروژه<input type="text" class="num" inputmode="numeric" id="cost"><span class="unit">تومان · نرم‌افزار، فونت، رفت‌وآمد…</span></label>
-      <label>درآمد ماهانه‌ای که می‌خوای<input type="text" class="num" inputmode="numeric" id="income"><span class="unit">تومان در ماه</span></label>
-      <label>ساعت کارت در ماه<input type="text" class="num" inputmode="numeric" id="hMonth"><span class="unit">ساعت</span></label>
-    </div>
-    <label style="margin-top:12px">چند درصد از وقتت واقعاً فروخته می‌شه؟ <b id="billOut"></b>
-      <input type="range" id="bill" min="40" max="100" step="5">
-    </label>
-    <p class="hint">بقیه‌ی وقت صرف پیدا کردن مشتری، پیام‌ها و کارهای اداری می‌شه. برای بیشتر فریلنسرها ۶۰ تا ۷۵ درصده.</p>
-  </fieldset>
+  <!-- 3 -->
+  <section class="screen" data-s="3">
+    <div class="step">قدم ۳ از ۶</div>
+    <div class="q">جلسه و اصلاحات چقدر وقت می‌بره؟</div>
+    <div class="sub">زمان‌هایی که معمولاً حساب نمی‌کنیم ولی ازمون گرفته می‌شه.</div>
+    <div class="stp"><div class="l">جلسه و هماهنگی<small>تماس، پیام، بریف</small></div><div class="c"><button type="button" data-inc="hMeet" data-d="1">+</button><input id="hMeet" inputmode="decimal"><button type="button" data-inc="hMeet" data-d="-1">−</button></div></div>
+    <div class="stp"><div class="l">اصلاحات<small>همه‌ی دورهای اصلاح روی هم</small></div><div class="c"><button type="button" data-inc="hRev" data-d="1">+</button><input id="hRev" inputmode="decimal"><button type="button" data-inc="hRev" data-d="-1">−</button></div></div>
+    <p class="hint" id="hTotal"></p>
+  </section>
 
-  <fieldset>
-    <legend>این کار برای مشتری چقدر ارزش داره؟</legend>
-    <div class="seg" role="radiogroup">
-      <label><input type="radio" name="val" value="1" id="v1"><span>کم</span></label>
-      <label><input type="radio" name="val" value="1.1" id="v2"><span>متوسط</span></label>
-      <label><input type="radio" name="val" value="1.25" id="v3"><span>زیاد</span></label>
-    </div>
-    <p class="hint">مثلاً اگه کارت مستقیم فروش مشتری رو بالا می‌بره، ارزشش زیاده. این روی گزینه‌های استاندارد و ویژه اثر می‌ذاره.</p>
-  </fieldset>
-
-  <fieldset>
-    <legend>شرایط کار</legend>
-    <div class="row">
-      <label>اصلاحات داخل قیمت<input type="text" class="num" inputmode="numeric" id="revs"><span class="unit">بار</span></label>
-      <label>مهلت تحویل<input type="text" class="num" inputmode="numeric" id="days"><span class="unit">روز کاری</span></label>
-      <label>پیش‌پرداخت<input type="text" class="num" inputmode="numeric" id="pre"><span class="unit">درصد</span></label>
-      <label>اعتبار این قیمت<input type="text" class="num" inputmode="numeric" id="valid"><span class="unit">روز · به‌خاطر تورم مهمه</span></label>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>قیمتی که الان تو ذهنته</legend>
-    <label><input type="text" class="num" inputmode="numeric" id="mind" placeholder="اگه نمی‌دونی، خالی بذار"><span class="unit">تومان</span></label>
-    <details>
-      <summary>تنظیم حاشیه‌ی سود گزینه‌ها</summary>
-      <div class="row">
-        <label>پایه<input type="text" class="num" inputmode="numeric" id="mB"><span class="unit">درصد بالای کف</span></label>
-        <label>استاندارد<input type="text" class="num" inputmode="numeric" id="mS"><span class="unit">درصد بالای کف</span></label>
-        <label>ویژه<input type="text" class="num" inputmode="numeric" id="mP"><span class="unit">درصد بالای کف</span></label>
-      </div>
+  <!-- 4 -->
+  <section class="screen" data-s="4">
+    <div class="step">قدم ۴ از ۶</div>
+    <div class="q">ماهی چقدر می‌خوای درآمد داشته باشی؟</div>
+    <div class="sub">از این عدد، حداقل نرخ ساعتیت حساب می‌شه.</div>
+    <div class="bignum"><input id="incomeM" inputmode="decimal"><span>میلیون تومان در ماه</span></div>
+    <div class="chips" data-for="incomeM" data-v="20,30,40,60,80,100"></div>
+    <details class="more"><summary>ساعت کاری و وقت قابل‌فروش (پیشرفته)</summary>
+      <label class="fld">ساعت کارت در ماه<input id="hMonth" inputmode="numeric"></label>
+      <label class="fld" style="margin-top:12px">چند درصد از وقتت واقعاً فروخته می‌شه؟ <b id="billOut" style="color:#fff"></b><input type="range" id="bill" min="40" max="100" step="5"><small>بقیه صرف پیدا کردن مشتری و کارهای اداری می‌شه؛ برای بیشتر فریلنسرها ۶۰ تا ۷۵٪.</small></label>
     </details>
-  </fieldset>
+  </section>
 
-  <div class="btns">
-    <button type="button" id="clear">پاک کن، برای پروژه‌ی خودم</button>
-    <button type="button" id="demo">پر کردن نمونه</button>
-  </div>
-</form>
-
-<section class="result" aria-live="polite">
-  <div class="card">
-    <div class="big">
-      <div><small>کف قیمت این پروژه</small><b id="floorOut"></b><i>زیر این عدد، کمتر از درآمد هدفت می‌گیری</i></div>
-      <div><small>حداقل نرخ ساعتی تو</small><b id="rateOut"></b><i id="rateSub"></i></div>
+  <!-- 5 -->
+  <section class="screen" data-s="5">
+    <div class="step">قدم ۵ از ۶</div>
+    <div class="q">هزینه و ارزش این کار</div>
+    <div class="fields">
+      <label class="fld">هزینه‌های مستقیم این پروژه (تومان)<input id="cost" inputmode="numeric" placeholder="۰"><small>نرم‌افزار، فونت، چاپ، رفت‌وآمد…</small></label>
     </div>
-    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <div class="lbl">این کار برای مشتری چقدر ارزش داره؟</div>
+    <div class="seg" id="valSeg"><button type="button" data-v="1">کم</button><button type="button" data-v="1.1">متوسط</button><button type="button" data-v="1.25">زیاد</button></div>
+    <p class="hint">اگه کارت مستقیم فروش مشتری رو بالا می‌بره، ارزشش زیاده. روی گزینه‌های استاندارد و ویژه اثر می‌ذاره.</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="screen" data-s="6">
+    <div class="step">قدم ۶ از ۶</div>
+    <div class="q">شرایط کار</div>
+    <div class="stp"><div class="l">اصلاحات داخل قیمت<small>بار</small></div><div class="c"><button type="button" data-inc="revs" data-d="1">+</button><input id="revs" inputmode="numeric"><button type="button" data-inc="revs" data-d="-1">−</button></div></div>
+    <div class="stp"><div class="l">مهلت تحویل<small>روز کاری</small></div><div class="c"><button type="button" data-inc="days" data-d="1">+</button><input id="days" inputmode="numeric"><button type="button" data-inc="days" data-d="-1">−</button></div></div>
+    <div class="stp"><div class="l">پیش‌پرداخت<small>درصد</small></div><div class="c"><button type="button" data-inc="pre" data-d="10">+</button><input id="pre" inputmode="numeric"><button type="button" data-inc="pre" data-d="-10">−</button></div></div>
+    <div class="stp"><div class="l">اعتبار قیمت<small>روز · به‌خاطر تورم مهمه</small></div><div class="c"><button type="button" data-inc="valid" data-d="1">+</button><input id="valid" inputmode="numeric"><button type="button" data-inc="valid" data-d="-1">−</button></div></div>
+    <div class="fields"><label class="fld">قیمتی که الان تو ذهنته (تومان)<input id="mind" inputmode="numeric" placeholder="اگه نمی‌دونی، خالی بذار"></label></div>
+  </section>
+
+  <!-- result -->
+  <section class="screen" data-s="7">
+    <div class="step" style="text-align:center;margin-top:16px">قیمت پیشنهادی تو</div>
+    <div class="gauge"><svg viewBox="0 0 280 160" id="gsvg"></svg><div class="v"><b id="gPrice"></b><span id="gSub"></span></div></div>
+    <div class="legend"><span><i style="background:#ff6b5e"></i>زیر کف (ضرر)</span><span><i style="background:#3fc1cb"></i>محدوده‌ی سالم</span><span><i style="background:#fff"></i>قیمت ذهنی تو</span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="kv" id="kv"></div>
     <p class="alert" id="alert" hidden></p>
-  </div>
-
-  <div>
-    <h2>سه گزینه برای مشتری</h2>
-    <div class="tiers" id="tiers"></div>
-  </div>
-
-  <div class="card">
-    <h2>متن پیشنهاد قیمت</h2>
-    <label class="chk"><input type="checkbox" id="all3"> هر سه گزینه رو به مشتری پیشنهاد بده</label>
-    <textarea id="prop" aria-label="متن پیشنهاد قیمت"></textarea>
-    <div class="copyrow"><button type="button" class="main" id="copy">کپی متن</button><span class="copied" id="copied" hidden>کپی شد</span></div>
-  </div>
-
-  <details class="card">
-    <summary><b>محاسبه چطور انجام شد؟</b></summary>
-    <table><tbody id="calc"></tbody></table>
-  </details>
-</section>
-</main>
-
-<p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. قبل از ارسال، عددها رو یه بار خودت مرور کن. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن.</p>
-
-<div class="bar" id="bar"><span>کف: <b id="barF"></b></span><span>استاندارد: <b id="barS"></b></span></div>
+    <div class="prop">
+      <h3>متن پیشنهاد برای مشتری</h3>
+      <label class="chk"><input type="checkbox" id="all3"> هر سه گزینه رو پیشنهاد بده</label>
+      <textarea id="prop" aria-label="متن پیشنهاد قیمت"></textarea>
+      <p class="copied" id="copied" hidden></p>
+    </div>
+    <details class="more"><summary>محاسبه چطور انجام شد؟</summary><table class="calc"><tbody id="calc"></tbody></table>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+        <label class="fld">پایه ٪<input id="mB" inputmode="numeric"></label><label class="fld">استاندارد ٪<input id="mS" inputmode="numeric"></label><label class="fld">ویژه ٪<input id="mP" inputmode="numeric"></label>
+      </div><small style="color:#7f93a8;font-size:12px">حاشیه‌ی سود هر گزینه، درصد بالای کف</small>
+    </details>
+    <p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن. <a href="#" id="reset" style="color:#8fd3da">شروع از اول</a></p>
+  </section>
+</div>
+<div class="nav"><button type="button" class="back" id="back">قبلی</button><button type="button" class="next" id="next">بعدی ←</button></div>
 
 <script>
-{
-const $ = id => document.getElementById(id);
-const DEMO = {service:'طراحی لوگو',client:'کافه نارنج',deliv:'لوگو + راهنمای رنگ و فونت',hMeet:'3',hWork:'14',hRev:'5',cost:'500000',income:'40000000',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'10',pre:'50',valid:'7',mind:'5000000',mB:'15',mS:'35',mP:'70'};
-const BLANK = {service:'',client:'',deliv:'',hMeet:'',hWork:'',hRev:'',cost:'',income:'',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
-const TEXT = ['service','client','deliv'];
-const NUMS = ['hMeet','hWork','hRev','cost','income','hMonth','revs','days','pre','valid','mind','mB','mS','mP'];
-const KEY = 'jg-tool-001';
-let tier = 1;
+(function(){
+var $=function(id){return document.getElementById(id)};
+var KEY='jg-tool-001-v2';
+var DEMO={service:'طراحی لوگو',client:'کافه نارنج',deliv:'لوگو + راهنمای رنگ و فونت',hMeet:'3',hWork:'14',hRev:'5',cost:'500000',incomeM:'40',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'10',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
+var BLANK={service:'',client:'',deliv:'',hMeet:'2',hWork:'',hRev:'2',cost:'',incomeM:'',hMonth:'160',bill:'70',val:'1.1',revs:'2',days:'7',pre:'50',valid:'7',mind:'',mB:'15',mS:'35',mP:'70'};
+var IDS=['service','client','deliv','hMeet','hWork','hRev','cost','incomeM','hMonth','revs','days','pre','valid','mind','mB','mS','mP'];
+var NUMS=IDS.slice(3);
+var st={step:1,tier:1,val:'1.1',all3:false};
+var N=6;
 
-const toEn = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
-const num = id => { const v = parseFloat(toEn($(id).value).replace(/[,،٬\s]/g, '').replace('٫', '.')); return isFinite(v) ? v : 0; };
-const fa = n => Math.round(n).toLocaleString('fa-IR');
-const faD = n => n.toLocaleString('fa-IR', {maximumFractionDigits: 2});
-const toman = n => fa(n) + ' تومان';
-const short = n => n >= 1e6 ? (Math.round(n / 1e5) / 10).toLocaleString('fa-IR') + ' م' : fa(n / 1000) + ' هزار';
-const up = x => { const st = x >= 1e7 ? 1e5 : x >= 1e6 ? 5e4 : 1e4; return Math.ceil(x / st) * st; };
-const val = () => parseFloat(document.querySelector('input[name=val]:checked')?.value || '1');
+function toEn(s){return String(s).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)})}
+function num(id){var v=parseFloat(toEn($(id).value).replace(/[,،٬\s]/g,'').replace('٫','.'));return isFinite(v)?v:0}
+function fa(n){return Math.round(n).toLocaleString('fa-IR')}
+function faD(n){return n.toLocaleString('fa-IR',{maximumFractionDigits:2})}
+function toman(n){return fa(n)+' تومان'}
+function short(n){return n>=1e6?(Math.round(n/1e5)/10).toLocaleString('fa-IR')+' م':fa(n/1000)+' هزار'}
+function up(x){var s=x>=1e7?1e5:x>=1e6?5e4:1e4;return Math.ceil(x/s)*s}
 
-function fill(d){
-  for (const k of TEXT.concat(NUMS)) $(k).value = d[k] ?? '';
-  for (const k of NUMS) if ($(k).value) $(k).value = faD(num(k));
-  $('bill').value = d.bill;
-  const r = document.querySelector('input[name=val][value="' + d.val + '"]'); if (r) r.checked = true;
-}
-function save(){
-  const d = {}; for (const k of TEXT.concat(NUMS)) d[k] = $(k).value;
-  d.bill = $('bill').value; d.val = String(val()); d.tier = tier; d.all3 = $('all3').checked;
-  try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
-}
+function fill(d){IDS.forEach(function(k){$(k).value=d[k]||''});NUMS.forEach(function(k){if($(k).value)$(k).value=faD(num(k))});$('bill').value=d.bill||70;st.val=String(d.val||'1.1')}
+function save(){var d={};IDS.forEach(function(k){d[k]=$(k).value});d.bill=$('bill').value;d.val=st.val;d.tier=st.tier;d.all3=$('all3').checked;d.step=st.step;try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
 
 function calc(){
-  const H = num('hMeet') + num('hWork') + num('hRev');
-  const cost = num('cost'), inc = num('income'), hm = num('hMonth'), bill = +$('bill').value;
-  const sell = hm * bill / 100;
-  const rate = sell > 0 ? inc / sell : 0;
-  const floor = H * rate + cost;
-  const v = val(), revs = num('revs'), days = num('days');
-  const m = [num('mB'), num('mS'), num('mP')].map(x => x / 100);
-  const T = [
-    {name:'پایه', price: up(floor * (1 + m[0])), revs: Math.max(1, revs - 1), days: days, extra: 'دامنه‌ی کار دقیقاً همونی که توافق شده'},
-    {name:'استاندارد', price: up(floor * (1 + m[1]) * v), revs: revs, days: days, extra: 'پیشنهاد اصلی تو'},
-    {name:'ویژه', price: up(floor * (1 + m[2]) * v), revs: revs + 2, days: Math.max(1, Math.round(days * 0.7)), extra: 'پشتیبانی ۱۴ روزه بعد از تحویل'}
-  ];
-  T.forEach(t => t.eff = H > 0 ? (t.price - cost) / H : 0);
-  return {H, cost, inc, hm, bill, sell, rate, floor, v, T, mind: num('mind')};
+  var H=num('hMeet')+num('hWork')+num('hRev'),cost=num('cost'),inc=num('incomeM')*1e6,hm=num('hMonth'),bill=+$('bill').value;
+  var sell=hm*bill/100,rate=sell>0?inc/sell:0,floor=H*rate+cost,v=parseFloat(st.val),revs=num('revs'),days=num('days');
+  var m=[num('mB'),num('mS'),num('mP')].map(function(x){return x/100});
+  var T=[{name:'پایه',price:up(floor*(1+m[0])),revs:Math.max(1,revs-1),days:days,extra:'دامنه‌ی کار دقیقاً همونی که توافق شده'},
+         {name:'استاندارد',price:up(floor*(1+m[1])*v),revs:revs,days:days,extra:'پیشنهاد اصلی تو'},
+         {name:'ویژه',price:up(floor*(1+m[2])*v),revs:revs+2,days:Math.max(1,Math.round(days*.7)),extra:'پشتیبانی ۱۴ روزه بعد از تحویل'}];
+  T.forEach(function(t){t.eff=H>0?(t.price-cost)/H:0});
+  return {H:H,cost:cost,inc:inc,hm:hm,bill:bill,sell:sell,rate:rate,floor:floor,v:v,T:T,mind:num('mind')};
 }
 
-function ruler(c){
-  const P = c.mind, max = Math.max(c.T[2].price, P) * 1.08 || 1;
-  const pos = x => Math.min(97, Math.max(3, x / max * 100));
-  let h = '<div class="track"><div class="loss" style="width:' + (c.floor / max * 100) + '%"></div></div>';
-  c.T.forEach((t, i) => { h += '<div class="mk t' + (i === tier ? ' on' : '') + '" style="right:' + pos(t.price) + '%">' + t.name + '<br>' + short(t.price) + '<div class="dot"></div></div>'; });
-  h += '<div class="mk f" style="right:' + pos(c.floor) + '%">کف ' + short(c.floor) + '</div>';
-  if (P > 0) { const near = Math.abs(pos(P) - pos(c.floor)) / 100 * ($('ruler').clientWidth || 600) < 110; h += '<div class="mk p' + (near ? ' low' : '') + '" style="right:' + pos(P) + '%">قیمت تو ' + short(P) + '</div>'; }
-  $('ruler').innerHTML = h;
-}
-
-function alertBox(c){
-  const a = $('alert'), P = c.mind;
-  if (!(P > 0) || !(c.floor > 0)) { a.hidden = true; return; }
-  a.hidden = false;
-  const effP = c.H > 0 ? (P - c.cost) / c.H : 0;
-  if (P <= c.cost) { a.className = 'alert bad'; a.textContent = 'این قیمت حتی هزینه‌های مستقیم پروژه رو پوشش نمی‌ده. با این عدد از جیبت می‌ذاری.'; }
-  else if (P < c.floor) { a.className = 'alert bad'; a.textContent = 'قیمتی که تو ذهنته ' + toman(c.floor - P) + ' زیر کف قیمتته. با این قیمت ساعتی ' + toman(effP) + ' درمیاری، در حالی که برای رسیدن به درآمد هدفت ساعتی ' + toman(c.rate) + ' لازم داری.'; }
-  else if (P < c.T[0].price) { a.className = 'alert warn'; a.textContent = 'قیمتت بالای کفه ولی حاشیه‌ی اطمینان نداره. اگه کار یه کم طول بکشه، از درآمد هدفت عقب می‌افتی.'; }
-  else { a.className = 'alert ok'; a.textContent = 'قیمتت در محدوده‌ی گزینه‌هاست و ساعتی ' + toman(effP) + ' برات درمیاره.'; }
-}
-
-function proposal(c){
-  const s = $('service').value.trim() || 'پروژه', cl = $('client').value.trim(), dv = $('deliv').value.trim();
-  const pre = num('pre'), valid = num('valid');
-  const line = t => '• ' + t.name + ': ' + toman(t.price) + ' · ' + fa(t.revs) + ' بار اصلاح · تحویل ' + fa(t.days) + ' روز کاری' + (t.name === 'ویژه' ? ' · ' + t.extra : '');
-  let x = 'سلام' + (cl ? ' ' + cl : '') + '،\nممنون از اعتمادتون. پیشنهاد قیمت ' + s + ' به این شرحه:\n\n';
-  if (dv) x += 'تحویلی: ' + dv + '\n';
-  if ($('all3').checked) x += '\n' + c.T.map(line).join('\n') + '\n';
-  else { const t = c.T[tier]; x += 'قیمت: ' + toman(t.price) + '\nاصلاحات: تا ' + fa(t.revs) + ' بار، در محدوده‌ی همین کار\nزمان تحویل: ' + fa(t.days) + ' روز کاری بعد از دریافت پیش‌پرداخت و اطلاعات لازم\n' + (t.name === 'ویژه' ? t.extra + '\n' : ''); }
-  x += '\nپرداخت: ' + fa(pre) + ' درصد پیش‌پرداخت و باقی هنگام تحویل.\nاصلاحات بیشتر یا تغییر در دامنه‌ی کار جداگانه قیمت‌گذاری می‌شه.\nاین قیمت تا ' + fa(valid) + ' روز معتبره.\n\nاگه سؤالی دارید خوشحال می‌شم صحبت کنیم.';
-  $('prop').value = x;
+// gauge: semicircle, left = 0, right = max
+function pt(t,r){var a=Math.PI*(1-t);return [140+r*Math.cos(a),150-r*Math.sin(a)]}
+function arc(t0,t1,col,w,cap){var r=118,p0=pt(t0,r),p1=pt(t1,r),lg=0;return '<path d="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' A'+r+' '+r+' 0 '+lg+' 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'" fill="none" stroke-linecap="'+(cap||'butt')+'"/>'}
+function gauge(c){
+  var t=c.T[st.tier],max=Math.max(c.T[2].price,c.mind)*1.1||1,f=Math.min(.98,c.floor/max);
+  var h=arc(0,1,'rgba(255,255,255,.12)',18,'round')+arc(0.001,f,'#ff6b5e',18,'round')+arc(f,0.999,'#3fc1cb',18);
+  c.T.forEach(function(x,i){var p=pt(Math.min(.98,x.price/max),118);h+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(i===st.tier?13:5)+'" fill="'+(i===st.tier?'#f77f00':'#0b1424')+'" stroke="#fff" stroke-width="'+(i===st.tier?4:2)+'"/>'});
+  if(c.mind>0){var a=pt(Math.min(.98,c.mind/max),104),b=pt(Math.min(.98,c.mind/max),134);h+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#fff" stroke-width="4" stroke-linecap="round"/>'}
+  $('gsvg').innerHTML=h;
+  $('gPrice').textContent=short(t.price);
+  var pct=c.floor>0?Math.round((t.price/c.floor-1)*100):0;
+  $('gSub').textContent='تومان · '+fa(pct)+'٪ بالاتر از کف';
 }
 
 function render(){
-  const c = calc();
-  const ok = c.H > 0 && c.rate > 0;
-  $('billOut').textContent = fa(c.bill) + '٪';
-  $('floorOut').textContent = ok ? toman(c.floor) : '—';
-  $('rateOut').textContent = ok ? toman(c.rate) : '—';
-  $('rateSub').textContent = ok ? 'برای ' + faD(c.H) + ' ساعت کار این پروژه' : 'ساعت‌ها و درآمد رو وارد کن';
-  $('barF').textContent = ok ? short(c.floor) : '—';
-  $('barS').textContent = ok ? short(c.T[1].price) : '—';
-  if (!ok) { $('ruler').innerHTML = '<div class="track"></div>'; $('alert').hidden = true; $('tiers').innerHTML = ''; $('prop').value = ''; $('calc').innerHTML = ''; save(); return; }
-  ruler(c); alertBox(c);
-  $('tiers').innerHTML = c.T.map((t, i) => '<button type="button" class="tier' + (i === tier ? ' on' : '') + '" data-i="' + i + '" aria-pressed="' + (i === tier) + '"><h3>' + t.name + '</h3><span class="pr">' + toman(t.price) + '</span><span class="eff">ساعتی ' + toman(t.eff) + ' برای تو</span><ul><li>' + fa(t.revs) + ' بار اصلاح</li><li>تحویل ' + fa(t.days) + ' روز کاری</li><li>' + t.extra + '</li></ul></button>').join('');
-  const rows = [
-    ['ساعت قابل‌فروش در ماه', fa(c.hm) + ' × ' + fa(c.bill) + '٪ = ' + fa(c.sell) + ' ساعت'],
-    ['حداقل نرخ ساعتی', toman(c.inc) + ' ÷ ' + fa(c.sell) + ' = ' + toman(c.rate)],
-    ['کل ساعت پروژه', faD(c.H) + ' ساعت'],
-    ['کف قیمت', faD(c.H) + ' × ' + fa(c.rate) + ' + ' + fa(c.cost) + ' = ' + toman(c.floor)],
-    ['ضریب ارزش برای مشتری', '×' + c.v.toLocaleString('fa-IR')],
-    ['گزینه‌ها', 'کف + حاشیه، گرد شده به بالا']
-  ];
-  $('calc').innerHTML = rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('');
-  proposal(c); save();
+  var c=calc(),ok=c.H>0&&c.rate>0;
+  $('billOut').textContent=fa(c.bill)+'٪';
+  $('hTotal').textContent=c.H>0?'کل زمان این پروژه: '+faD(c.H)+' ساعت':'';
+  Array.prototype.forEach.call(document.querySelectorAll('#valSeg button'),function(b){b.classList.toggle('on',b.dataset.v===st.val)});
+  Array.prototype.forEach.call(document.querySelectorAll('.chips'),function(g){var v=num(g.dataset.for);Array.prototype.forEach.call(g.children,function(b){b.classList.toggle('on',+b.dataset.v===v)})});
+  if(ok&&st.step===7){
+    gauge(c);
+    $('tabs').innerHTML=c.T.map(function(t,i){return '<button type="button" data-i="'+i+'" class="'+(i===st.tier?'on':'')+'">'+t.name+'<small>'+short(t.price)+'</small></button>'}).join('');
+    var t=c.T[st.tier];
+    $('kv').innerHTML=[['قیمت این گزینه',toman(t.price)],['کف قیمت (زیرش ضرره)',toman(c.floor)],['حداقل نرخ ساعتی تو',toman(c.rate)],['درآمد ساعتی با این قیمت',toman(t.eff)],['اصلاحات',fa(t.revs)+' بار'],['تحویل',fa(t.days)+' روز کاری']].map(function(r){return '<div><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('');
+    alertBox(c);proposal(c);
+    $('calc').innerHTML=[['ساعت قابل‌فروش در ماه',fa(c.hm)+' × '+fa(c.bill)+'٪ = '+fa(c.sell)],['حداقل نرخ ساعتی',toman(c.rate)],['کل ساعت پروژه',faD(c.H)],['کف قیمت',faD(c.H)+' × '+fa(c.rate)+' + '+fa(c.cost)],['ضریب ارزش','×'+c.v.toLocaleString('fa-IR')]].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('');
+  }
+  save();
+}
+function alertBox(c){
+  var a=$('alert'),P=c.mind;if(!(P>0)){a.hidden=true;return}a.hidden=false;
+  var eP=c.H>0?(P-c.cost)/c.H:0;
+  if(P<=c.cost){a.className='alert bad';a.textContent='قیمتی که تو ذهنته حتی هزینه‌های مستقیم پروژه رو پوشش نمی‌ده.'}
+  else if(P<c.floor){a.className='alert bad';a.textContent='قیمتی که تو ذهنته '+toman(c.floor-P)+' زیر کف قیمتته. با این قیمت ساعتی '+toman(eP)+' درمیاری، ولی برای درآمد هدفت ساعتی '+toman(c.rate)+' لازم داری.'}
+  else if(P<c.T[0].price){a.className='alert warn';a.textContent='قیمت ذهنیت بالای کفه ولی حاشیه‌ی اطمینان نداره. اگه کار یه کم طول بکشه، از درآمد هدفت عقب می‌افتی.'}
+  else{a.className='alert ok';a.textContent='قیمت ذهنیت سالمه و ساعتی '+toman(eP)+' برات درمیاره.'}
+}
+function proposal(c){
+  var s=$('service').value.trim()||'پروژه',cl=$('client').value.trim(),dv=$('deliv').value.trim(),pre=num('pre'),valid=num('valid');
+  function line(t){return '• '+t.name+': '+toman(t.price)+' · '+fa(t.revs)+' بار اصلاح · تحویل '+fa(t.days)+' روز کاری'+(t.name==='ویژه'?' · '+t.extra:'')}
+  var x='سلام'+(cl?' '+cl:'')+'،\nممنون از اعتمادتون. پیشنهاد قیمت '+s+' به این شرحه:\n\n';
+  if(dv)x+='تحویلی: '+dv+'\n';
+  if($('all3').checked)x+='\n'+c.T.map(line).join('\n')+'\n';
+  else{var t=c.T[st.tier];x+='قیمت: '+toman(t.price)+'\nاصلاحات: تا '+fa(t.revs)+' بار، در محدوده‌ی همین کار\nزمان تحویل: '+fa(t.days)+' روز کاری بعد از دریافت پیش‌پرداخت و اطلاعات لازم\n'+(t.name==='ویژه'?t.extra+'\n':'')}
+  x+='\nپرداخت: '+fa(pre)+' درصد پیش‌پرداخت و باقی هنگام تحویل.\nاصلاحات بیشتر یا تغییر در دامنه‌ی کار جداگانه قیمت‌گذاری می‌شه.\nاین قیمت تا '+fa(valid)+' روز معتبره.\n\nاگه سؤالی دارید خوشحال می‌شم صحبت کنیم.';
+  $('prop').value=x;
 }
 
-$('f').addEventListener('input', () => { $('sampleNote').hidden = true; render(); });
-$('f').addEventListener('submit', e => e.preventDefault());
-$('all3').addEventListener('change', render);
-for (const k of NUMS) $(k).addEventListener('blur', () => { if ($(k).value.trim()) $(k).value = faD(num(k)); });
-$('tiers').addEventListener('click', e => { const b = e.target.closest('.tier'); if (!b) return; tier = +b.dataset.i; render(); });
-$('clear').addEventListener('click', () => { fill(BLANK); tier = 1; $('sampleNote').hidden = true; render(); $('service').focus(); });
-$('demo').addEventListener('click', () => { fill(DEMO); tier = 1; $('sampleNote').hidden = false; render(); });
-$('copy').addEventListener('click', async () => {
-  const t = $('prop'); let done = false;
-  try { await navigator.clipboard.writeText(t.value); done = true; } catch (e) { t.select(); try { done = document.execCommand('copy'); } catch (e2) {} }
-  $('copied').textContent = done ? 'کپی شد' : 'متن رو انتخاب کردم؛ با Ctrl+C یا لمس طولانی کپی کن';
-  $('copied').hidden = false; setTimeout(() => { $('copied').hidden = true; }, 2500);
+function need(){ // can we leave this step?
+  if(st.step===2)return num('hWork')>0;
+  if(st.step===4)return num('incomeM')>0&&num('hMonth')>0;
+  return true;
+}
+function go(s){
+  st.step=Math.max(1,Math.min(7,s));
+  Array.prototype.forEach.call(document.querySelectorAll('.screen'),function(e){e.classList.toggle('on',+e.dataset.s===st.step)});
+  $('prog').innerHTML=Array.apply(null,Array(N)).map(function(_,i){return '<i class="'+(i<Math.min(st.step,N)?'on':'')+'"></i>'}).join('');
+  $('back').textContent=st.step===7?'ویرایش':'قبلی';
+  $('back').disabled=st.step===1;
+  $('next').textContent=st.step===6?'ببین قیمتت چنده ←':st.step===7?'📋 کپی پیشنهاد':'بعدی ←';
+  window.scrollTo(0,0);render();upd();
+}
+function upd(){$('next').disabled=!need()}
+
+// chips
+Array.prototype.forEach.call(document.querySelectorAll('.chips'),function(g){
+  g.innerHTML=g.dataset.v.split(',').map(function(v){return '<button type="button" data-v="'+v+'">'+fa(+v)+'</button>'}).join('');
+  g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$(g.dataset.for).value=fa(+b.dataset.v);render();upd()});
 });
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-inc]');if(b){var id=b.dataset.inc,v=Math.max(0,num(id)+(+b.dataset.d));if(id==='pre')v=Math.min(100,v);$(id).value=faD(v);render();upd();return}
+  var s=e.target.closest('#valSeg button');if(s){st.val=s.dataset.v;render();return}
+  var t=e.target.closest('#tabs button');if(t){st.tier=+t.dataset.i;render();return}
+});
+document.addEventListener('input',function(){render();upd()});
+$('all3').addEventListener('change',render);
+NUMS.forEach(function(k){$(k).addEventListener('blur',function(){if($(k).value.trim())$(k).value=faD(num(k))})});
+$('back').onclick=function(){go(st.step-1)};
+$('next').onclick=function(){
+  if(st.step<7){if(need())go(st.step+1);return}
+  var t=$('prop'),done=false;
+  function show(ok){$('copied').textContent=ok?'کپی شد ✓ حالا توی چت مشتری بچسبون.':'متن رو انتخاب کردم؛ با لمس طولانی کپی کن.';$('copied').hidden=false;setTimeout(function(){$('copied').hidden=true},3000)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(function(){show(true)},function(){t.select();try{done=document.execCommand('copy')}catch(e){}show(done)})}
+  else{t.select();try{done=document.execCommand('copy')}catch(e){}show(done)}
+};
+$('reset').onclick=function(e){e.preventDefault();fill(BLANK);st.tier=1;$('all3').checked=false;go(1)};
 
-let start = DEMO, saved = null;
-try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
-if (saved) { start = Object.assign({}, BLANK, saved); tier = saved.tier ?? 1; $('all3').checked = !!saved.all3; $('sampleNote').hidden = true; }
-fill(start); render();
-}
+var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+if(saved){fill(Object.assign({},BLANK,saved));st.tier=saved.tier==null?1:saved.tier;$('all3').checked=!!saved.all3;go(saved.step||1)}
+else{fill(DEMO);go(1)}
+})();
 </script>
 <!-- Jobgrade Mini App bar: back to catalog + add to home screen -->
 <style>
