@@ -81,6 +81,8 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
 .chk{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
 .chk input{width:20px;height:20px;accent-color:var(--orange)}
 .copied{font-size:13.5px;color:var(--teal);text-align:center;margin-top:8px}
+.newp{font:inherit;font-size:13px;color:#fff;background:var(--glass2);border:1px solid var(--ln);border-radius:20px;padding:6px 14px;cursor:pointer}
+.newbig{display:block;width:100%;margin:18px 0 0;font:inherit;font-weight:700;font-size:15px;color:#fff;background:transparent;border:1.5px dashed var(--ln);border-radius:16px;padding:14px;cursor:pointer}
 .foot{font-size:12.5px;color:#7f93a8;margin:18px 0 0;line-height:1.8}
 .calc td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
 .calc td:last-child{text-align:left;white-space:nowrap}
@@ -163,7 +165,7 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
 
   <!-- result -->
   <section class="screen" data-s="7">
-    <div class="step" style="text-align:center;margin-top:16px">قیمت پیشنهادی تو</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><span class="step" style="margin:0">قیمت پیشنهادی تو</span><button type="button" class="newp" id="newTop">🔄 قیمت جدید</button></div>
     <div class="gauge"><svg viewBox="0 0 280 160" id="gsvg"></svg><div class="v"><b id="gPrice"></b><span id="gSub"></span></div></div>
     <div class="legend"><span><i style="background:#ff6b5e"></i>زیر کف (ضرر)</span><span><i style="background:#3fc1cb"></i>محدوده‌ی سالم</span><span><i style="background:#fff"></i>قیمت ذهنی تو</span></div>
     <div class="tabs" id="tabs"></div>
@@ -180,7 +182,8 @@ input[type=range]{width:100%;accent-color:var(--teal);height:36px}
         <label class="fld">پایه ٪<input id="mB" inputmode="numeric"></label><label class="fld">استاندارد ٪<input id="mS" inputmode="numeric"></label><label class="fld">ویژه ٪<input id="mP" inputmode="numeric"></label>
       </div><small style="color:#7f93a8;font-size:12px">حاشیه‌ی سود هر گزینه، درصد بالای کف</small>
     </details>
-    <p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن. <a href="#" id="reset" style="color:#8fd3da">شروع از اول</a></p>
+    <button type="button" class="newbig" id="newBig">🔄 شروع یک قیمت‌گذاری جدید</button>
+    <p class="foot">این ابزار نرخ بازار رو نمی‌دونه و قیمت رو فقط از زمان، هزینه و درآمد هدف خودت می‌سازه. ورودی‌هات فقط روی همین دستگاه ذخیره می‌شن.</p>
   </section>
 </div>
 <div class="nav"><button type="button" class="back" id="back">قبلی</button><button type="button" class="next" id="next">بعدی ←</button></div>
@@ -304,7 +307,18 @@ $('next').onclick=function(){
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(function(){show(true)},function(){t.select();try{done=document.execCommand('copy')}catch(e){}show(done)})}
   else{t.select();try{done=document.execCommand('copy')}catch(e){}show(done)}
 };
-$('reset').onclick=function(e){e.preventDefault();fill(BLANK);st.tier=1;$('all3').checked=false;go(1)};
+// New price: clear this project's answers, keep the person's own settings (income, work hours, margins, payment terms).
+function newPrice(){
+  var msg='اطلاعات این پروژه پاک بشه و قیمت‌گذاری جدید شروع بشه؟ درآمد ماهانه و تنظیمات خودت می‌مونه.';
+  var tg=window.Telegram&&Telegram.WebApp;
+  if(tg&&tg.initData&&tg.isVersionAtLeast&&tg.isVersionAtLeast('6.2')){tg.showConfirm(msg,function(ok){if(ok)doNew()});return}
+  if(confirm(msg))doNew();
+}
+function doNew(){
+  var keep={};['incomeM','hMonth','pre','valid','mB','mS','mP'].forEach(function(k){keep[k]=$(k).value});
+  var b=$('bill').value;fill(Object.assign({},BLANK,keep,{bill:b}));st.tier=1;$('all3').checked=false;go(1);$('service').focus();
+}
+$('newTop').onclick=newPrice;$('newBig').onclick=newPrice;
 
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){fill(Object.assign({},BLANK,saved));st.tier=saved.tier==null?1:saved.tier;$('all3').checked=!!saved.all3;go(saved.step||1)}
